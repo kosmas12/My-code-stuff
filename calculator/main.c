@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <math.h>
 
+//This is a calculator at its most basic level, but math.h is included because more features will be added in the near future
+
+
 int n1;
 int n2;
-char calctype;
+int calctype;
 
 int askForNums()
     {
@@ -26,7 +29,7 @@ int main()
     printf("3. Multiplication\n");
     printf("4. Division\n");
 
-    scanf("%c", &calctype);
+    scanf("%d", &calctype);
 
     switch (calctype)
     {
