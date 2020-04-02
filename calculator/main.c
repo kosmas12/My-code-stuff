@@ -3,14 +3,14 @@
 
 int n1;
 int n2;
-int calctype;
+char calctype;
 
 int askForNums()
     {
 
         printf("Give me the numbers in order");
-        scanf(%d, &n1);
-        scanf(%d, &n2);
+        scanf("%d", &n1);
+        scanf("%d", &n2);
         return n1, n2;
 
     }
@@ -25,10 +25,8 @@ int main()
     printf("2. Subtraction\n");
     printf("3. Multiplication\n");
     printf("4. Division\n");
-    fprintf(stderr, "Printed welcome message");
 
-    scanf(&calctype);
-    fprintf(stderr, "Scanned the calculation type");
+    scanf("%c", &calctype);
 
     switch (calctype)
     {
