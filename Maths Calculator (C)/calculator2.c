@@ -8,6 +8,10 @@ static float help(float a, float b);
 
 static float quit(float a, float b);
 
+const float rads_per_degree = 0.01745329252;
+
+float rads;
+
 typedef struct {
     const char command;
     const char* description;
@@ -23,47 +27,32 @@ static float division(float a, float b) { return a / b;}
 
 static float subtraction(float a, float b) { return a - b;}
 
-static float trigonometry(float a, float b)
-{
-    float angle;
-    float angleD;
-    float angleR;
-    char angletype;
-    printf("Please give me your angle in either:\ndegrees (type d and then a space before the number) or\nradians (type r and then a space before the number)");
-    scanf(" %c %f", &angletype, &angle);
+static float cosD(float a, float b) {rads = a * rads_per_degree; return cos(rads);}
 
-    if (angletype == 'r')
-    {
-        angleR = angle;
-    }
-    if (angletype == 'd')
-    {
-        angleD = angle;
-        angleR = angleD * 0.01745329252;
-    }
-    
-    printf("sin is %f\n", sin(angleR));
-    printf("tan is %f\n", tan(angleR));
-    printf("cos is %f\n", cos(angleR));
-    return a;
-}
+static float cosR(float a, float b) { return cos(a); }
 
-static float squareRoot(float a, float b)
-{
-    float numforsqrt;
-    printf("Which number would you like to see the square root of? ");
-    scanf(" %f", &numforsqrt);
-    printf("The square root of your number is: %f\n", sqrt(numforsqrt));
-    
-}
+static float tanD(float a, float b) {rads = a * rads_per_degree; return tan(rads);}
+
+static float tanR(float a, float b) { return cos(a); }
+
+static float sinD(float a, float b) {rads = a * rads_per_degree; return sin(rads);}
+
+static float sinR(float a, float b) { return cos(a); }
+
+static float squareRoot(float a, float b) { return sqrt(a); }
 
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
   { .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
   { .command='/', .description="Division", .use_default_input=true, .handler=division },
   { .command='-', .description="Subtraction", .use_default_input=true, .handler=subtraction },
-  { .command='t', .description="Trigonometry", .use_default_input=false, .handler=trigonometry},
-  { .command='s', .description="Square root", .use_default_input=false, .handler=squareRoot},
+  { .command='r', .description="Square root of result", .use_default_input=false, .handler=squareRoot},
+  { .command='s', .description="Sin with angle in degrees", .use_default_input=false, .handler=sinD},
+  { .command='S', .description="Sin with angle in radians", .use_default_input=false, .handler=sinR},
+  { .command='c', .description="Cos with angle in degrees", .use_default_input=false, .handler=cosD},
+  { .command='C', .description="Cos with angle in radians", .use_default_input=false, .handler=cosR},
+  { .command='t', .description="Tan with angle in degrees", .use_default_input=false, .handler=tanD},
+  { .command='T', .description="Tan with angle in radians", .use_default_input=false, .handler=tanR},
   { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
   { .command='h', .description="This help page", .use_default_input=false, .handler=help}
 };
