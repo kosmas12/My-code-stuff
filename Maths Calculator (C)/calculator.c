@@ -79,7 +79,7 @@ void askForNums()
     scanf(" %d", &n2);
 }
 
-char getInput()
+void getInput()
 {
     scanf(" %c", &calctype);
 
