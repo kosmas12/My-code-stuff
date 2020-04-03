@@ -122,7 +122,7 @@ void PrintMenu()
     printf("2. Subtraction\n");
     printf("3. Multiplication\n");
     printf("4. Division\n");
-    printf("5. Triginomentry\n");
+    printf("5. Trigonometry\n");
     printf("Press q to exit.\n");
     getInput();
 
