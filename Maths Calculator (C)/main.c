@@ -28,6 +28,35 @@ void Division()
     printf("The result is: %d\n", n1 / n2);
 }
 
+void Trigonometry()
+{
+    double angle;
+    double angleD;
+    double angleR;
+    char anglechar;
+    printf("Tell me the angle in degrees (d and a space before the number) or radians (r and a space before the number):\n");
+    scanf(" %c", &anglechar);
+    scanf(" %lf", &angle);
+
+    switch (anglechar)
+    {
+    case 'd':
+        angleD = angle;
+        angleR = angleD * 0.01745329252;
+        break;
+    
+    case 'r':
+        angleR = angle;
+        break;
+    default:
+        printf("Invalid angle character.");
+        break;
+    }
+
+    printf("sin(%f) is %f\n", angle, sin(angleR));
+    printf("tan(%f) is %f\n", angle, tan(angleR));
+    printf("cos(%f) is %f\n", angle, cos(angleR));
+}
 void Exit()
 {
     printf("Exiting...\n");
@@ -37,8 +66,8 @@ void Exit()
 void askForNums()
 {
     printf("Also give me the numbers in the order you want them: ");
-    scanf("%d", &n1);
-    scanf("%d", &n2);
+    scanf(" %d", &n1);
+    scanf(" %d", &n2);
 }
 
 char getInput()
@@ -47,7 +76,11 @@ char getInput()
 
     if (calctype != 'q')
     {
-        askForNums();
+        if (calctype != '5')
+        {
+            askForNums();
+        }
+        
         switch (calctype)
         {
             case '1':
@@ -62,10 +95,14 @@ char getInput()
             case '4':
                 Division();
                 break;
+            case '5':
+                Trigonometry();
+                break;
             case 'q':
                 Exit();
                 break;
             default:
+                printf("Invalid option.");
                 break;
        
         }
@@ -85,6 +122,7 @@ void PrintMenu()
     printf("2. Subtraction\n");
     printf("3. Multiplication\n");
     printf("4. Division\n");
+    printf("5. Triginomentry\n");
     printf("Press q to exit.\n");
     getInput();
 
