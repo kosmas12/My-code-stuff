@@ -23,16 +23,47 @@ static float division(float a, float b) { return a / b;}
 
 static float subtraction(float a, float b) { return a - b;}
 
+static float trigonometry(float a, float b)
+{
+    float angle;
+    float angleD;
+    float angleR;
+    char angletype;
+    printf("Please give me your angle in either:\ndegrees (type d and then a space before the number) or\nradians (type r and then a space before the number)");
+    scanf(" %c %f", &angletype, &angle);
+
+    if (angletype == 'r')
+    {
+        angleR = angle;
+    }
+    if (angletype == 'd')
+    {
+        angleD = angle;
+        angleR = angleD * 0.01745329252;
+    }
+    else
+    {
+        printf("Invalid angle unit.\n");
+    }
+    
+    printf("sin is %f\n", sin(angleR));
+    printf("tan is %f\n", tan(angleR));
+    printf("cos is %f\n", cos(angleR));
+
+
+}
+
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .need_input=true, .handler=addition },
   { .command='*', .description="Multiplication", .need_input=true, .handler=multiplication },
   { .command='/', .description="Division", .need_input=true, .handler=division },
   { .command='-', .description="Subtraction", .need_input=true, .handler=subtraction },
+  { .command='t', .description="Trigonometry", .need_input=false, .handler=trigonometry},
   { .command='q', .description="Quit", .need_input=false, .handler=quit },
   { .command='h', .description="This help page", .need_input=false, .handler=help}
 };
 
-static float quit(float a, float b) { exit(0);}
+static float quit(float a, float b) { printf("Exiting..."); exit(0);}
 
 static float help(float a, float b)
 {
@@ -41,6 +72,7 @@ static float help(float a, float b)
         MathOperation* o = &operations[i];
         printf("%c: %s\n", o->command, o->description);
     }
+    printf("Also note that you start with 0 on the result so your first operation will work with 0 and your number. ");
     return a;
 }
 
@@ -62,6 +94,7 @@ int main()
             {
                 if(o->need_input == 1)
                 {
+                    printf("Please give me the number you want to use for the operation. ");
                     scanf(" %f", &user_input);
                 }
                 result = o->handler(result, user_input);
