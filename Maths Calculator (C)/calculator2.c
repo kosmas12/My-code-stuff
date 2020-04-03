@@ -11,7 +11,7 @@ static float quit(float a, float b);
 typedef struct {
     const char command;
     const char* description;
-    bool need_input;
+    bool use_default_input;
     float(*handler)(float a, float b);
 }MathOperation;
 
@@ -41,29 +41,34 @@ static float trigonometry(float a, float b)
         angleD = angle;
         angleR = angleD * 0.01745329252;
     }
-    else
-    {
-        printf("Invalid angle unit.\n");
-    }
     
     printf("sin is %f\n", sin(angleR));
     printf("tan is %f\n", tan(angleR));
     printf("cos is %f\n", cos(angleR));
+    return a;
+}
 
-
+static float squareRoot(float a, float b)
+{
+    float numforsqrt;
+    printf("Which number would you like to see the square root of? ");
+    scanf(" %f", &numforsqrt);
+    printf("The square root of your number is: %f\n", sqrt(numforsqrt));
+    
 }
 
 static MathOperation operations[] = {
-  { .command='+', .description="Addition", .need_input=true, .handler=addition },
-  { .command='*', .description="Multiplication", .need_input=true, .handler=multiplication },
-  { .command='/', .description="Division", .need_input=true, .handler=division },
-  { .command='-', .description="Subtraction", .need_input=true, .handler=subtraction },
-  { .command='t', .description="Trigonometry", .need_input=false, .handler=trigonometry},
-  { .command='q', .description="Quit", .need_input=false, .handler=quit },
-  { .command='h', .description="This help page", .need_input=false, .handler=help}
+  { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
+  { .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
+  { .command='/', .description="Division", .use_default_input=true, .handler=division },
+  { .command='-', .description="Subtraction", .use_default_input=true, .handler=subtraction },
+  { .command='t', .description="Trigonometry", .use_default_input=false, .handler=trigonometry},
+  { .command='s', .description="Square root", .use_default_input=false, .handler=squareRoot},
+  { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
+  { .command='h', .description="This help page", .use_default_input=false, .handler=help}
 };
 
-static float quit(float a, float b) { printf("Exiting..."); exit(0);}
+static float quit(float a, float b) { printf("Exiting...\n"); exit(0);}
 
 static float help(float a, float b)
 {
@@ -92,7 +97,7 @@ int main()
             MathOperation* o = &operations[i];
             if (o->command == user_command)
             {
-                if(o->need_input == 1)
+                if(o->use_default_input == true)
                 {
                     printf("Please give me the number you want to use for the operation. ");
                     scanf(" %f", &user_input);
