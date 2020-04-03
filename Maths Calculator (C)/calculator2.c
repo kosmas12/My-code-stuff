@@ -41,6 +41,7 @@ int main()
         scanf(" %c", &user_command);
         for(int i = 0; i < ARRAY_SIZE(operations); i++) 
         {
+            MathOperation* o = &operations[i];
    
             if (o->command == user_command)
             {
@@ -48,7 +49,6 @@ int main()
                 { 
                     for(int i = 0; i < ARRAY_SIZE(operations); i++) 
                     {
-                        MathOperation* o = &operations[i];
                         printf("%c: %s\n", o->command, o->description);
                     }
                 }
