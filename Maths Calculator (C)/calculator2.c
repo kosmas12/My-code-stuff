@@ -41,19 +41,22 @@ static float sinR(float a, float b) { return cos(a); }
 
 static float squareRoot(float a, float b) { return sqrt(a); }
 
+static float power(float a, float b) {return pow(a, b);}
+
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
   { .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
   { .command='/', .description="Division", .use_default_input=true, .handler=division },
   { .command='-', .description="Subtraction", .use_default_input=true, .handler=subtraction },
   { .command='r', .description="Square root of result", .use_default_input=false, .handler=squareRoot},
-  { .command='s', .description="Sin with angle in degrees", .use_default_input=false, .handler=sinD},
-  { .command='S', .description="Sin with angle in radians", .use_default_input=false, .handler=sinR},
-  { .command='c', .description="Cos with angle in degrees", .use_default_input=false, .handler=cosD},
-  { .command='C', .description="Cos with angle in radians", .use_default_input=false, .handler=cosR},
-  { .command='t', .description="Tan with angle in degrees", .use_default_input=false, .handler=tanD},
-  { .command='T', .description="Tan with angle in radians", .use_default_input=false, .handler=tanR},
+  { .command='s', .description="Sin with angle in degrees", .use_default_input=true, .handler=sinD},
+  { .command='S', .description="Sin with angle in radians", .use_default_input=true, .handler=sinR},
+  { .command='c', .description="Cos with angle in degrees", .use_default_input=true, .handler=cosD},
+  { .command='C', .description="Cos with angle in radians", .use_default_input=true, .handler=cosR},
+  { .command='t', .description="Tan with angle in degrees", .use_default_input=true, .handler=tanD},
+  { .command='T', .description="Tan with angle in radians", .use_default_input=true, .handler=tanR},
   { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
+  { .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
   { .command='h', .description="This help page", .use_default_input=false, .handler=help}
 };
 
