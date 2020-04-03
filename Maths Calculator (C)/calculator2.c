@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 static float help(float a, float b);
@@ -10,7 +11,7 @@ static float quit(float a, float b);
 typedef struct {
     const char command;
     const char* description;
-    int inputs;
+    bool need_input;
     float(*handler)(float a, float b);
 }MathOperation;
 
@@ -23,12 +24,12 @@ static float division(float a, float b) { return a / b;}
 static float subtraction(float a, float b) { return a - b;}
 
 static MathOperation operations[] = {
-  { .command='+', .description="Addition", .inputs=2, .handler=addition },
-  { .command='*', .description="Multiplication", .inputs=2, .handler=multiplication },
-  { .command='/', .description="Division", .inputs=2, .handler=division },
-  { .command='-', .description="Subtraction", .inputs=2, .handler=subtraction },
-  { .command='q', .description="Quit", .inputs=0, .handler=quit },
-  { .command='h', .description="This help page", .inputs=0, .handler=help}
+  { .command='+', .description="Addition", .need_input=true, .handler=addition },
+  { .command='*', .description="Multiplication", .need_input=true, .handler=multiplication },
+  { .command='/', .description="Division", .need_input=true, .handler=division },
+  { .command='-', .description="Subtraction", .need_input=true, .handler=subtraction },
+  { .command='q', .description="Quit", .need_input=false, .handler=quit },
+  { .command='h', .description="This help page", .need_input=false, .handler=help}
 };
 
 static float quit(float a, float b) { exit(0);}
@@ -40,6 +41,7 @@ static float help(float a, float b)
         MathOperation* o = &operations[i];
         printf("%c: %s\n", o->command, o->description);
     }
+    return a;
 }
 
 
@@ -58,6 +60,10 @@ int main()
             MathOperation* o = &operations[i];
             if (o->command == user_command)
             {
+                if(o->need_input == 1)
+                {
+                    scanf(" %f", &user_input);
+                }
                 result = o->handler(result, user_input);
                 printf("Result is %f. Please tell me your next calculation.\n", result);
             }
