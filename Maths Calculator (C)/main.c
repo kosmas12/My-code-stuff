@@ -57,6 +57,15 @@ void Trigonometry()
     printf("tan(%f) is %f\n", angle, tan(angleR));
     printf("cos(%f) is %f\n", angle, cos(angleR));
 }
+
+void squareRoot()
+{   
+    float numforsqrt;
+    printf("Give me the number you want to see the square root of:\n");
+    scanf(" %f", &numforsqrt);
+    printf("The square root of number %f is: %f\n", numforsqrt, sqrt(numforsqrt));
+}
+
 void Exit()
 {
     printf("Exiting...\n");
@@ -76,7 +85,7 @@ char getInput()
 
     if (calctype != 'q')
     {
-        if (calctype != '5')
+        if (calctype != '5' && calctype != '6')
         {
             askForNums();
         }
@@ -98,6 +107,9 @@ char getInput()
             case '5':
                 Trigonometry();
                 break;
+            case '6':
+                squareRoot();
+                break;
             case 'q':
                 Exit();
                 break;
@@ -112,6 +124,7 @@ char getInput()
         Exit();
     }
     
+    
 }
 
 void PrintMenu()
@@ -123,6 +136,7 @@ void PrintMenu()
     printf("3. Multiplication\n");
     printf("4. Division\n");
     printf("5. Trigonometry\n");
+    printf("6. Square root\n");
     printf("Press q to exit.\n");
     getInput();
 
