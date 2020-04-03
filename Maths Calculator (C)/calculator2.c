@@ -3,6 +3,10 @@
 #include <math.h>
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
+static float help(float a, float b)
+
+static float quit(float a, float b)
+
 typedef struct {
     char command;
     const char* description;
@@ -14,20 +18,9 @@ static float addition(float a, float b) { return a + b; }
 
 static float multiplication(float a, float b) { return a * b; }
 
-static float division(float a, float b) {return a / b;}
+static float division(float a, float b) { return a / b;}
 
-static float subtraction(float a, float b) {return a - b;}
-
-static float quit(float a, float b) {exit(0);}
-
-static float help(float a, float b)
-{
-    for(int i = 0; i < ARRAY_SIZE(operations); i++) 
-    {
-        MathOperation* o = &operations[i];
-        printf("%c: %s\n", o->command, o->description);
-    }
-}
+static float subtraction(float a, float b) { return a - b;}
 
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .inputs=2, .handler=addition },
@@ -38,6 +31,18 @@ static MathOperation operations[] = {
   { .command='h', .description="This help page", .inputs=0, .handler=help}
 };
 
+static float quit(float a, float b) { exit(0);}
+
+static float help(float a, float b)
+{
+    for(int i = 0; i < ARRAY_SIZE(operations); i++) 
+    {
+        MathOperation* o = &operations[i];
+        printf("%c: %s\n", o->command, o->description);
+    }
+}
+
+
 
 int main()
 {
@@ -47,7 +52,7 @@ int main()
         float user_input = 0.0f;
         float result = 0.0f;
         
-        printf("Please tell me your desired calculation type. For help enter h");
+        printf("Please tell me your desired calculation type. For help enter h.\n");
         scanf(" %c", &user_command);
         for(int i = 0; i < ARRAY_SIZE(operations); i++) 
         {
