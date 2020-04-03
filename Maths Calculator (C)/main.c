@@ -7,7 +7,7 @@
 
 int n1;
 int n2;
-char calctype;
+char calctype = '\0';
 
 void Addition()
 {
