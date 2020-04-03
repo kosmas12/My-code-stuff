@@ -3,12 +3,12 @@
 #include <math.h>
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
-static float help(float a, float b)
+static float help(float a, float b);
 
-static float quit(float a, float b)
+static float quit(float a, float b);
 
 typedef struct {
-    char command;
+    const char command;
     const char* description;
     int inputs;
     float(*handler)(float a, float b);
@@ -47,18 +47,19 @@ static float help(float a, float b)
 int main()
 {
     char user_command = '\0';
+    float user_input = 1.0f;
+    float result = 0.0f;
     while (user_command != 'q')
     {   
-        float user_input = 0.0f;
-        float result = 0.0f;
-        
         printf("Please tell me your desired calculation type. For help enter h.\n");
         scanf(" %c", &user_command);
         for(int i = 0; i < ARRAY_SIZE(operations); i++) 
         {
+            MathOperation* o = &operations[i];
             if (o->command == user_command)
             {
-                result = o->handler(result, user_input);  
+                result = o->handler(result, user_input);
+                printf("Result is %f. Please tell me your next calculation.\n", result);
             }
         }
 
