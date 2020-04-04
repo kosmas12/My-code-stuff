@@ -33,11 +33,11 @@ static float cosR(float a, float b) { return cos(a); }
 
 static float tanD(float a, float b) {rads = a * rads_per_degree; return tan(rads);}
 
-static float tanR(float a, float b) { return cos(a); }
+static float tanR(float a, float b) { return tan(a); }
 
 static float sinD(float a, float b) {rads = a * rads_per_degree; return sin(rads);}
 
-static float sinR(float a, float b) { return cos(a); }
+static float sinR(float a, float b) { return sin(a); }
 
 static float squareRoot(float a, float b) { return sqrt(a); }
 
