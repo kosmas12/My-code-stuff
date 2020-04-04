@@ -87,7 +87,7 @@ static float help(float a, float b)
 
 int main()
 {
-    SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO); //Initialize SDL for consoles
     char user_command = '\0';
     float user_input = 1.0f;
     float result = 0.0f;
