@@ -159,9 +159,34 @@ int main()
                 if(o->use_default_input == true)
                 {
                     debugPrint("Please give me the number you want to use for the operation. ");
+                    switch (SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) < deadzone)
+                    {
+                        case true:
+                            ydir = -1;
+                            break;
+            
+                        case false:
+                            ydir = 1;
+                            break;
+                        default:
+                            ydir = 0;
+                            break;
+                    }
+
+                    switch (ydir)
+                    {
+                        case -1:
+                            i--;
+                            break;
+            
+                        case 1:
+                            i++;
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
-                result = o->handler(result, user_input);
-                debugPrint("Result is %f. Please tell me your next calculation.\n", result);
             }
             
         
