@@ -97,14 +97,19 @@ int main()
         {
             if(SDL_IsGameController(i))
             {
-                break;
+                controller = SDL_GameControllerOpen(i);
+                if(controller)
+                {
+                    break;
+                }
+                
             }
             
         }
 
-    debugPrint("Please tell me your desired calculation type. For help enter h.\n");
     while (user_command != 'q')
     {   
+        debugPrint("Please tell me your desired calculation type. For help enter h.\n");
         scanf(" %c", &user_command);
         for(int i = 0; i < ARRAY_SIZE(operations); i++) 
         {
