@@ -87,12 +87,15 @@ static float help(float a, float b)
 
 int main()
 {
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO); //Initialize SDL for consoles
+    SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
     char user_command = '\0';
     float user_input = 1.0f;
     float result = 0.0f;
 
     SDL_GameController *controller = NULL;
+
     for (int i = 0; i < SDL_NumJoysticks; i++)
         {
             if(SDL_IsGameController(i))
@@ -107,25 +110,19 @@ int main()
             
         }
 
+    debugPrint("Please tell me your desired calculation type. For help enter h.\n");
+    
     while (user_command != 'q')
     {   
-        debugPrint("Please tell me your desired calculation type. For help enter h.\n");
-        scanf(" %c", &user_command);
-        for(int i = 0; i < ARRAY_SIZE(operations); i++) 
+        
+        for (int i; i<ARRAY_SIZE(operations);)
         {
-            MathOperation* o = &operations[i];
-            if (o->command == user_command)
+            if(SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX))
             {
-                if(o->use_default_input == true)
-                {
-                    debugPrint("Please give me the number you want to use for the operation. ");
-                    scanf(" %f", &user_input);
-                }
-                result = o->handler(result, user_input);
-                debugPrint("Result is %f. Please tell me your next calculation.\n", result);
-            }
-        }
 
+            }
+        
+        }
     }
     
 }
