@@ -1,4 +1,4 @@
-XBE_TITLE=calculator
+XBE_TITLE=XCalculator
 GEN_XISO = $(XBE_TITLE).iso
 SRCS = XCalculator.c
 NXDK_DIR = /home/kosmas/nxdk/
