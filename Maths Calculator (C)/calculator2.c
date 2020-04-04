@@ -43,6 +43,8 @@ static float squareRoot(float a, float b) { return sqrt(a); }
 
 static float power(float a, float b) {return pow(a, b);}
 
+static float reset(float a, float b) {a = 0.0f; return a;}
+
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
   { .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
@@ -55,8 +57,9 @@ static MathOperation operations[] = {
   { .command='C', .description="Cos with angle in radians", .use_default_input=true, .handler=cosR},
   { .command='t', .description="Tan with angle in degrees", .use_default_input=true, .handler=tanD},
   { .command='T', .description="Tan with angle in radians", .use_default_input=true, .handler=tanR},
-  { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
   { .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
+  { .command='e', .description="Reset result", .use_default_input=false, .handler=reset},
+  { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
   { .command='h', .description="This help page", .use_default_input=false, .handler=help}
 };
 
