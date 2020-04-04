@@ -115,7 +115,7 @@ int main()
             
         }
 
-    debugPrint("Please tell me your desired calculation type. For help enter h.\n");
+    debugPrint("Please tell me your desired calculation type. For help enter h (access number 14).\n");
 
     while (user_command != 13)
     {   
@@ -154,6 +154,8 @@ int main()
 
             user_command = i;
 
+            debugPrint(user_command);
+
             if (o->accessnum == user_command)
             {
                 if(o->use_default_input == true)
@@ -176,19 +178,20 @@ int main()
                     switch (ydir)
                     {
                         case -1:
-                            i--;
+                            user_input--;
                             break;
             
                         case 1:
-                            i++;
+                            user_input++;
                             break;
 
                         default:
                             break;
                     }
                 }
-            }
-            
+            }   result = o->handler(result,user_input);
+                debugPrint("Result is %f. Please tell me your next calculation.\n", result);
+                    
         
         }
     }
