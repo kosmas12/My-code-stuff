@@ -161,7 +161,7 @@ int main()
                 if(o->use_default_input == true)
                 {
                     debugPrint("Please give me the number you want to use for the operation. ");
-                    switch (SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) < deadzone)
+                    switch (SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) < deadzone)
                     {
                         case true:
                             ydir = -1;
