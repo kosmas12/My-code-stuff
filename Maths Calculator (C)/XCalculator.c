@@ -67,6 +67,8 @@ static void Init()
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
+    SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1"); 
+
     SDL_Init(SDL_INIT_JOYSTICK|SDL_INIT_VIDEO); //Initialize SDL for consoles
     
     SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
@@ -137,16 +139,17 @@ static float getInput()
 {
     debugPrint("Please give me the number you want to use for the operation. ");
 
-    Sint16 Yamount = 
+    Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
 
     if (Yamount > deadzone)
     {
-        user_input += ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)0x8000)  / 60.0f;
+        user_input += ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / 60.0f;
     }
     else if (Yamount < deadzone)
     {
-        user_input-=0.001f;
+        user_input -= ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / 60.0f;
     }
+
 
     if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
     {    
@@ -174,6 +177,8 @@ int main()
                 
         }
     }
+
+while(true) { float v = getInput(); debugPrint("getInput * 1000: %d", (int)(v * 1000)); }
 
     debugPrint("Please tell me your desired calculation type. For help enter h.\n");
 
