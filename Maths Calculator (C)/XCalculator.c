@@ -55,7 +55,7 @@ static float reset(float a, float b) {a = 0.0f; return a;}
 
 char user_command = '\0';
 
-const int deadzone = -8000;
+const int deadzone = 8000;
 
 float user_input = 1.0f;
 
@@ -116,7 +116,7 @@ static char getCommand(void)
             {
                 i++;
             }
-            else if (Xamount < deadzone)
+            else if (Xamount < -deadzone)
             {
                 i--;
             }
