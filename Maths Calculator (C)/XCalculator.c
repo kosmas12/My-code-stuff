@@ -124,6 +124,7 @@ static char getCommand(void)
             MathOperation* o = &operations[i];
 
             debugPrint("Selected mode is: %c (%c)", o->command, o->description);
+            continue;
 
             if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
             {
