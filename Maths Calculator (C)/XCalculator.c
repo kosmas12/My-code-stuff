@@ -133,23 +133,25 @@ static char getCommand(void)
         }
 }
 
-static float getInput(char a)
+static float getInput()
 {
-     Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY);
+    debugPrint("Please give me the number you want to use for the operation. ");
 
-        if (Yamount > deadzone)
-        {
-            user_input+=0.001f;
-        }
-        else if (Yamount < deadzone)
-        {
-            user_input-=0.001f;
-        }
+    Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY);
 
-        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
-        {
-            return user_input;
-        }
+    if (Yamount > deadzone)
+    {
+        user_input+=0.001f;
+    }
+    else if (Yamount < deadzone)
+    {
+        user_input-=0.001f;
+    }
+
+    if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+    {    
+        return user_input;
+    }
 }
 
 int main()
@@ -178,7 +180,21 @@ int main()
     while(user_command != 'q')
     {
         getCommand();
-        getInput(user_command);
+
+        for (int i; i < ARRAY_SIZE(operations); i++)
+        {
+            MathOperation* o = &operations[i];
+
+            if (user_command == o->command)
+            {
+                if(o->use_default_input == true)
+                {
+                        getInput();
+                }
+                result = o->handler(result, user_input);
+                debugPrint("Result is %f. Please tell me your next calculation.\n", result);
+            }
+        }
 
         
     }
