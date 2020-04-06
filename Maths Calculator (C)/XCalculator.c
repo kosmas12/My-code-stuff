@@ -10,6 +10,8 @@
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
+
+
 static float help(float a, float b);
 
 static float quit(float a, float b);
@@ -51,6 +53,16 @@ static float power(float a, float b) {return pow(a, b);}
 
 static float reset(float a, float b) {a = 0.0f; return a;}
 
+char user_command = '\0';
+
+const int deadzone = -8000;
+
+float user_input = 1.0f;
+
+float result = 0.0f;
+
+SDL_GameController *controller = NULL;
+
 static void Init()
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
@@ -75,7 +87,7 @@ static MathOperation operations[] = {
   { .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
   { .command='e', .description="Reset result", .use_default_input=false, .handler=reset},
   { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
-  { .command='h', .description="This help page", .use_default_input=false, .handler=help}
+  { .command='h', .description="Help page", .use_default_input=false, .handler=help}
 };
 
 static float quit(float a, float b) { debugPrint("Exiting...\n"); exit(0);}
@@ -93,19 +105,58 @@ static float help(float a, float b)
     return a;
 }
 
+static char getCommand(void)
+{
+    Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
 
+        for (int i; i < ARRAY_SIZE(operations);)
+        {
+
+            if (Xamount > deadzone)
+            {
+                i++;
+            }
+            else if (Xamount < deadzone)
+            {
+                i--;
+            }
+
+            MathOperation* o = &operations[i];
+
+            debugPrint("Selected mode is: %c (%c)", o->command, o->description);
+
+            if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+            {
+                user_command = o->command;
+                return user_command;
+            }
+        }
+}
+
+static float getInput(char a)
+{
+     Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY);
+
+        if (Yamount > deadzone)
+        {
+            user_input+=0.001f;
+        }
+        else if (Yamount < deadzone)
+        {
+            user_input-=0.001f;
+        }
+
+        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+        {
+            return user_input;
+        }
+}
 
 int main()
 {
-    const int deadzone = -8000;
-
+    
     Init();
 
-    char user_command = '\0';
-    float user_input = 1.0f;
-    float result = 0.0f;
-
-    SDL_GameController *controller = NULL;
 
     for (int i = 0; i < SDL_NumJoysticks; i++)
     {
@@ -126,29 +177,10 @@ int main()
 
     while(user_command != 'q')
     {
-        Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+        getCommand();
+        getInput(user_command);
 
-        for (int i; i < ARRAY_SIZE(operations);)
-        {
-
-            if (Xamount < deadzone)
-            {
-                i--;
-            }
-            if (Xamount > deadzone)
-            {
-                i++;
-            }
-
-            if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
-            {
-                user_command = i;
-            }
-
-            MathOperation* o = &operations[i];
-            debugPrint("Selected mode is: %c", o->command);
-        }
-            
+        
     }
 
 
