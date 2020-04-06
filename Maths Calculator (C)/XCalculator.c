@@ -55,7 +55,7 @@ static float reset(float a, float b) {a = 0.0f; return a;}
 
 char user_command = '\0';
 
-const int deadzone = 8000;
+const int deadzone = 4000;
 
 float user_input = 1.0f;
 
@@ -109,22 +109,21 @@ static char getCommand(void)
 {
     Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
 
-        for (int i; i < ARRAY_SIZE(operations);)
+        for (int i = 0; i < ARRAY_SIZE(operations);)
         {
+            MathOperation* o = &operations[i];
 
             if (Xamount > deadzone)
             {
                 i++;
+                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
             }
             else if (Xamount < -deadzone)
             {
                 i--;
+                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
             }
 
-            MathOperation* o = &operations[i];
-
-            debugPrint("Selected mode is: %c (%c)", o->command, o->description);
-            continue;
 
             if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
             {
@@ -138,11 +137,11 @@ static float getInput()
 {
     debugPrint("Please give me the number you want to use for the operation. ");
 
-    Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY);
+    Sint16 Yamount = 
 
     if (Yamount > deadzone)
     {
-        user_input+=0.001f;
+        user_input += ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)0x8000)  / 60.0f;
     }
     else if (Yamount < deadzone)
     {
