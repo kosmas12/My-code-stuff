@@ -19,7 +19,6 @@ const float rads_per_degree = 0.01745329252;
 float rads;
 
 typedef struct {
-    const int accessnum;
     const char command;
     const char* description;
     bool use_default_input;
@@ -52,22 +51,31 @@ static float power(float a, float b) {return pow(a, b);}
 
 static float reset(float a, float b) {a = 0.0f; return a;}
 
+static void Init()
+{
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+
+    SDL_Init(SDL_INIT_JOYSTICK|SDL_INIT_VIDEO); //Initialize SDL for consoles
+    
+    SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
+}
+
 static MathOperation operations[] = {
-  { .accessnum='0', .command='+', .description="Addition", .use_default_input=true, .handler=addition },
-  { .accessnum='1', .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
-  { .accessnum='2', .command='/', .description="Division", .use_default_input=true, .handler=division },
-  { .accessnum='3', .command='-', .description="Subtraction", .use_default_input=true, .handler=subtraction },
-  { .accessnum='4', .command='r', .description="Square root of result", .use_default_input=false, .handler=squareRoot},
-  { .accessnum='5', .command='s', .description="Sin with angle in degrees", .use_default_input=true, .handler=sinD},
-  { .accessnum='6', .command='S', .description="Sin with angle in radians", .use_default_input=true, .handler=sinR},
-  { .accessnum='7', .command='c', .description="Cos with angle in degrees", .use_default_input=true, .handler=cosD},
-  { .accessnum='8', .command='C', .description="Cos with angle in radians", .use_default_input=true, .handler=cosR},
-  { .accessnum='9', .command='t', .description="Tan with angle in degrees", .use_default_input=true, .handler=tanD},
-  { .accessnum='10', .command='T', .description="Tan with angle in radians", .use_default_input=true, .handler=tanR},
-  { .accessnum='11', .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
-  { .accessnum='12', .command='e', .description="Reset result", .use_default_input=false, .handler=reset},
-  { .accessnum='13', .command='q', .description="Quit", .use_default_input=false, .handler=quit },
-  { .accessnum='14', .command='h', .description="This help page", .use_default_input=false, .handler=help}
+  { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
+  { .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
+  { .command='/', .description="Division", .use_default_input=true, .handler=division },
+  { .command='-', .description="Subtraction", .use_default_input=true, .handler=subtraction },
+  { .command='r', .description="Square root of result", .use_default_input=false, .handler=squareRoot},
+  { .command='s', .description="Sin with angle in degrees", .use_default_input=true, .handler=sinD},
+  { .command='S', .description="Sin with angle in radians", .use_default_input=true, .handler=sinR},
+  { .command='c', .description="Cos with angle in degrees", .use_default_input=true, .handler=cosD},
+  { .command='C', .description="Cos with angle in radians", .use_default_input=true, .handler=cosR},
+  { .command='t', .description="Tan with angle in degrees", .use_default_input=true, .handler=tanD},
+  { .command='T', .description="Tan with angle in radians", .use_default_input=true, .handler=tanR},
+  { .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
+  { .command='e', .description="Reset result", .use_default_input=false, .handler=reset},
+  { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
+  { .command='h', .description="This help page", .use_default_input=false, .handler=help}
 };
 
 static float quit(float a, float b) { debugPrint("Exiting...\n"); exit(0);}
@@ -89,111 +97,59 @@ static float help(float a, float b)
 
 int main()
 {
-    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
-    SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO); //Initialize SDL for consoles
-    SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
-    int user_command = 0;
+    const int deadzone = -8000;
+
+    Init();
+
+    char user_command = '\0';
     float user_input = 1.0f;
     float result = 0.0f;
-    const int deadzone = -8000;
-    int xdir;
-    int ydir;
 
     SDL_GameController *controller = NULL;
 
     for (int i = 0; i < SDL_NumJoysticks; i++)
+    {
+
+        if(SDL_IsGameController(i))
         {
-            if(SDL_IsGameController(i))
+            controller = SDL_GameControllerOpen(i);
+
+            if(controller)
             {
-                controller = SDL_GameControllerOpen(i);
-                if(controller)
-                {
-                    break;
-                }
+                break;
+            }
                 
-            }
-            
-        }
-
-    debugPrint("Please tell me your desired calculation type. For help enter h (access number 14).\n");
-
-    while (user_command != 13)
-    {   
-        
-        for (int i; i<ARRAY_SIZE(operations);)
-        {
-            MathOperation* o = &operations[i]; 
-
-            switch (SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) < deadzone)
-            {
-            case true:
-                xdir = -1;
-                break;
-            
-            case false:
-                xdir = 1;
-                break;
-            default:
-                xdir = 0;
-                break;
-            }
-
-            switch (xdir)
-            {
-            case -1:
-                i--;
-                break;
-            
-            case 1:
-                i++;
-                break;
-
-            default:
-                break;
-            }
-
-            user_command = i;
-
-            debugPrint(user_command);
-
-            if (o->accessnum == user_command)
-            {
-                if(o->use_default_input == true)
-                {
-                    debugPrint("Please give me the number you want to use for the operation. ");
-                    switch (SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) < deadzone)
-                    {
-                        case true:
-                            ydir = -1;
-                            break;
-            
-                        case false:
-                            ydir = 1;
-                            break;
-                        default:
-                            ydir = 0;
-                            break;
-                    }
-
-                    switch (ydir)
-                    {
-                        case -1:
-                            user_input--;
-                            break;
-            
-                        case 1:
-                            user_input++;
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-            }   result = o->handler(result,user_input);
-                debugPrint("Result is %f. Please tell me your next calculation.\n", result);
-                    
-        
         }
     }
-    
+
+    debugPrint("Please tell me your desired calculation type. For help enter h.\n");
+
+    while(user_command != 'q')
+    {
+        Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+
+        for (int i; i < ARRAY_SIZE(operations);)
+        {
+
+            if (Xamount < deadzone)
+            {
+                i--;
+            }
+            if (Xamount > deadzone)
+            {
+                i++;
+            }
+
+            if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+            {
+                user_command = i;
+            }
+
+            MathOperation* o = &operations[i];
+            debugPrint("Selected mode is: %c", o->command);
+        }
+            
+    }
+
+
 }
