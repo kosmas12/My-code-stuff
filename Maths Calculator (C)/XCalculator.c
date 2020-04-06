@@ -186,7 +186,7 @@ int main()
         {
             MathOperation* o = &operations[i];
 
-            if (user_command == o->command)
+            if (o->command == user_command)
             {
                 if(o->use_default_input == true)
                 {
