@@ -130,25 +130,37 @@ static char getCommand(void)
             if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
             {
                 user_command = o->command;
-                return user_command;
+                break;
             }
-        }
-}
+        }  
+    return user_command;
+        
+}   
 
 static float getInput()
 {
-    debugPrint("Please give me the number you want to use for the operation. ");
+  while(true) 
+  {
+    XVideoWaitForVBlank(); // Wait for next frame
+    SDL_GameControllerUpdate(); // Update gamepad values
 
-    Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+    debugPrint("Your current input [*1000] is %d", (int)(user_input*1000.0f));
 
-    if (Yamount > deadzone)
-    {
-        user_input += ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / 60.0f;
+    float Yamount = (float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000; // Get input in range -1 to +1
+    if (fabsf(Yamount) > 0.2f) 
+    { // Check 20% deadzone
+        user_input += Yamount / (float)REFRESH_DEFAULT; // Modify input
     }
-    else if (Yamount < deadzone)
+
+  // Stop asking for input if the user presses A
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) 
     {
-        user_input -= ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / 60.0f;
+        break;
     }
+}
+
+// Return the input
+return user_input;
 
 
     if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
