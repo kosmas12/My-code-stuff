@@ -140,15 +140,6 @@ static char getCommand(void)
 
     MathOperation* o = &operations[accessnum];
 
-    if (fabsf(Xamount) > 0.2f)
-    {
-                i++;
-    }
-    else if(fabsf(Xamount) < 0.2f)
-    {
-        i--;
-    }
-
     while (true)
     {
         XVideoWaitForVBlank();
@@ -159,7 +150,16 @@ static char getCommand(void)
 
         Sint16 Xamount = (float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)0x8000; // Get input in range -1 to +1
             
-            debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
+        if (fabsf(Xamount) > 0.2f)
+        {
+            accessnum++;
+        }
+        else if(fabsf(Xamount) < 0.2f)
+        {
+            accessnum--;
+        }
+
+        debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
 
         if (isAPressed())
         {
