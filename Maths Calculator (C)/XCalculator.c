@@ -160,7 +160,7 @@ static char getCommand(void)
                 i--;
 
             }
-            debugPrint("Current selected mode is: %c %c", o->command, o->description);
+            debugPrint("Current selected mode is: %c %s", o->command, o->description);
 
         }
         if (isAPressed())
