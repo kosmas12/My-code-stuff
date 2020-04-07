@@ -107,32 +107,10 @@ static float help(float a, float b)
     return a;
 }
 
-static char getCommand(void)
-{
-    Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
-
-        for (int i = 0; i < ARRAY_SIZE(operations);)
-        {
-            MathOperation* o = &operations[i];
-
-            if (Xamount > deadzone)
-            {
-                i++;
-                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
-            }
-            else if (Xamount < -deadzone)
-            {
-                i--;
-                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
-            }
-
-        }
-}
-
 // Stop asking for input if the user presses A
-bool a_is_held = true;
+static bool a_is_held = true;
     
-bool isAPressed() 
+static bool isAPressed() 
 {
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) 
     {
@@ -156,11 +134,42 @@ bool isAPressed()
     }
 }
 
+static char getCommand(void)
+{
+    Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+
+    while (true)
+    {
+        for (int i = 0; i < ARRAY_SIZE(operations);)
+        {
+            MathOperation* o = &operations[i];
+
+            if (Xamount > deadzone)
+            {
+                i++;
+                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
+            }
+            else if (Xamount < -deadzone)
+            {
+                i--;
+                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
+            }
+
+        }
+        if (isAPressed())
+        {
+            break;
+        }
+    }   
+    return user_command;
+}
+
 static float getInput()
 {
   while(true) 
   {
     XVideoWaitForVBlank(); // Wait for next frame
+    debugClearScreen();
     SDL_GameControllerUpdate(); // Update gamepad values
 
     debugPrint("Your current input [*1000] is %d", (int)(user_input*1000.0f));
@@ -170,11 +179,16 @@ static float getInput()
     { // Check 20% deadzone
         user_input += Yamount / (float)REFRESH_DEFAULT; // Modify input
     }
+  
+    if(isAPressed())
+    {
+        break;
+    }
+  }
+  // Return the input
+  return user_input;
 }
-// Return the input
-return user_input;
 
-}
 
 int main()
 {
