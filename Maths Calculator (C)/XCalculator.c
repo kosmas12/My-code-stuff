@@ -193,9 +193,10 @@ static char getCommand(void)
 
         if (isAPressed())
         {
+            user_command = o->command;
             break;
         }
-    }   
+    }
     return user_command;
 }
 
