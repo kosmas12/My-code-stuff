@@ -153,16 +153,11 @@ static char getCommand(void)
 
             if (fabsf(Xamount) > 0.2f)
             {
-                if(i < ARRAY_SIZE(operations))
-                {
-                    i++;
-                }
-                else
-                {
-                    i = 0;
-                }
-                
-
+                i++;
+            }
+            else if(fabsf(Xamount) < 0.2f)
+            {
+                i--;
             }
             debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
 
