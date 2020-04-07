@@ -126,8 +126,35 @@ static char getCommand(void)
                 debugPrint("Selected mode is: %c (%c)", o->command, o->description);
             }
 
+        }
+}
 
-
+// Stop asking for input if the user presses A
+bool a_is_held = true;
+    
+bool isAPressed() 
+{
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) 
+    {
+        // A is pressed, but do we allow it?
+        if (a_is_held) 
+        {
+            return false; // A is pressed now, but it was never released
+        } 
+        else 
+        {
+            a_is_held = true; // Remember that A was not released since this press
+            return true; // A is pressed right now, but it wasn't pressed before: allow
+        }
+        
+        
+    }
+    else 
+    {
+            a_is_held = false; // Remember that the user did not press A, so we can allow him to press it again
+            return false;
+    }
+}
 
 static float getInput()
 {
@@ -143,34 +170,7 @@ static float getInput()
     { // Check 20% deadzone
         user_input += Yamount / (float)REFRESH_DEFAULT; // Modify input
     }
-
-
-
-      // Stop asking for input if the user presses A
-    bool a_is_held = true;
-    bool isAPressed() 
-    {
-        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) 
-        {
-            // A is pressed, but do we allow it?
-            if (a_is_held) 
-            {
-                return false; // A is pressed now, but it was never released
-            } 
-            else 
-            {
-                a_is_held = true; // Remember that A was not released since this press
-                return true; // A is pressed right now, but it wasn't pressed before: allow
-            }
-
-            else 
-            {
-                a_is_held = false; // Remember that the user did not press A, so we can allow him to press it again
-                return false;
-            }
-        }
 }
-
 // Return the input
 return user_input;
 
