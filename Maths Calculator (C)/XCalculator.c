@@ -117,7 +117,7 @@ static void printfloat(float value)
     int beforePeriod = (int)(value);
     int afterPeriod = (value - beforePeriod) * 1000;
 
-    debugPrint("%d.%03d", beforePeriod, afterPeriod);
+    debugPrint("%d.%03d", beforePeriod, abs(afterPeriod));
 }
 
 static bool isAPressed() 
