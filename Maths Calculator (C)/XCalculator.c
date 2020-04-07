@@ -249,7 +249,7 @@ int main()
     {
         getCommand();
 
-        for (int i; i < ARRAY_SIZE(operations); i++)
+        for (int i = 0; i < ARRAY_SIZE(operations); i++)
         {
             MathOperation* o = &operations[i];
 
