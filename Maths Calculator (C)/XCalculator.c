@@ -136,6 +136,12 @@ static bool isAPressed()
 
 static char getCommand(void)
 {
+    XVideoWaitForVBlank();
+
+    debugClearScreen();
+
+    SDL_GameControllerUpdate();
+
     Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
 
     while (true)
@@ -210,8 +216,6 @@ int main()
                 
         }
     }
-
-while(true) { float v = getInput(); debugPrint("getInput * 1000: %d", (int)(v * 1000)); }
 
     debugPrint("Please tell me your desired calculation type. For help enter h.\n");
 
