@@ -155,8 +155,6 @@ static char getCommand(void)
 {
     int accessnum = 0;
 
-    MathOperation* o = &operations[accessnum];
-
     while (true)
     {
         XVideoWaitForVBlank();
@@ -169,16 +167,29 @@ static char getCommand(void)
 
         float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
             
-       if(Xamount < 0.5f)
+       if(Xamount < -0.5f)
        {
-            accessnum--;
-       }
+           if(accessnum > 0)
+           {
+               accessnum--;
+           }
+           else
+           {
+               accessnum = 0;
+           }
+        }
+
        else if(Xamount > 0.5f )
        {
-            accessnum++;
+           if(accessnum < ARRAY_SIZE(operations))
+           {
+               accessnum++;
+           }
        }
 
-        debugPrint("Current selected mode is: %d", accessnum);
+        MathOperation* o = &operations[accessnum];
+
+        debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
 
         if (isAPressed())
         {
