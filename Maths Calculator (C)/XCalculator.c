@@ -137,7 +137,7 @@ static bool isAPressed()
 static char getCommand(void)
 {
 
-    Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+    Sint16 Xamount = (float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000; // Get input in range -1 to +1
 
     while (true)
     {
@@ -146,20 +146,22 @@ static char getCommand(void)
         debugClearScreen();
 
         SDL_GameControllerUpdate();
+
         for (int i = 0; i < ARRAY_SIZE(operations);)
         {
             MathOperation* o = &operations[i];
 
-            if (Xamount > deadzone)
+            if (fabsf(Xamount) > 0.2f)
             {
                 i++;
             }
-            else if (Xamount < -deadzone)
+            else if (fabsf(Xamount) < 0.2f)
             {
                 i--;
+
             }
-        debugPrint("Current selected mode is: %c %c", o->command, o->description);
-        
+            debugPrint("Current selected mode is: %c %c", o->command, o->description);
+
         }
         if (isAPressed())
         {
@@ -183,6 +185,10 @@ static float getInput()
     if (fabsf(Yamount) > 0.2f) 
     { // Check 20% deadzone
         user_input += Yamount / (float)REFRESH_DEFAULT; // Modify input
+    }
+    else if (fabsf(Yamount) < 0.2f) 
+    { // Check 20% deadzone
+        user_input -= Yamount / (float)REFRESH_DEFAULT; // Modify input
     }
   
     if(isAPressed())
