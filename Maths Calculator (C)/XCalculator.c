@@ -134,6 +134,21 @@ static bool isAPressed()
     }
 }
 
+static float getAxis(int sdl_axis) {
+  const float deadzone = 0.2f;
+
+  // Get input in range -1 to +1
+  float amount = (float)SDL_GameControllerGetAxis(controller, sdl_axis) / (float)0x8000;
+
+  // Reject if the stick is in deadzone
+  if (fabsf(amount) < deadzone) {
+    return 0.0f;
+  }
+
+  // Re-normalize after deadzone
+  return (amount - deadzone) / (1.0f - deadzone);
+}
+
 static char getCommand(void)
 {
     int accessnum = 0;
@@ -150,15 +165,15 @@ static char getCommand(void)
 
         debugPrint("Please tell me your desired calculation type. For help enter h.\n");
 
-        Sint16 Xamount = (float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)0x8000; // Get input in range -1 to +1
+        Sint16 Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
             
-        if (fabsf(Xamount) > 0.2f)
+       if(getAxis < 0)
+       {
+            accessnum--;
+       }
+        else if(getAxis > 0 )
         {
             accessnum++;
-        }
-        else if(fabsf(Xamount) < -0.2f)
-        {
-            accessnum--;
         }
 
         debugPrint("Current selected mode is: %d", accessnum);
@@ -181,15 +196,9 @@ static float getInput()
 
     debugPrint("Your current input [*1000] is %d", (int)(user_input*1000.0f));
 
-    float Yamount = (float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000; // Get input in range -1 to +1
-    if (fabsf(Yamount) > 0.2f) 
-    { // Check 20% deadzone
-        user_input += Yamount / (float)REFRESH_DEFAULT; // Modify input
-    }
-    else if (fabsf(Yamount) < 0.2f) 
-    { // Check 20% deadzone
-        user_input -= Yamount / (float)REFRESH_DEFAULT; // Modify input
-    }
+    float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
+
+    
   
     if(isAPressed())
     {
