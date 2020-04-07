@@ -187,7 +187,7 @@ static char getCommand(void)
            {
                accessnum = 0;
            }
-        }
+       }
 
        else if(Xamount > 0.5f )
        {
@@ -221,15 +221,15 @@ static float getInput()
 
         debugPrint("Please give me the number you want to use for the operation. ");
 
-        Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+        float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
 
-        if (Yamount > deadzone)
+        if (Yamount > 0.5f)
         {
-            user_input += ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)0x8000)  / REFRESH_DEFAULT;
+            user_input += ((float)getAxis(SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / REFRESH_DEFAULT;
         }
-        else if (Yamount < deadzone)
+        else if (Yamount < -0.5f)
         {
-            user_input -= ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / REFRESH_DEFAULT;
+            user_input -= ((float)getAxis(SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / REFRESH_DEFAULT;
         }
 
         debugPrint("Your input is: ");
