@@ -10,8 +10,6 @@
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
-
-
 static float help(float a, float b);
 
 static float quit(float a, float b);
@@ -96,20 +94,32 @@ static float quit(float a, float b) { debugPrint("Exiting...\n"); exit(0);}
 
 static float help(float a, float b)
 {
-    for(int i = 0; i < ARRAY_SIZE(operations); i++) 
-    {
-        MathOperation* o = &operations[i];
 
+    XVideoWaitForVBlank();
+
+    debugClearScreen();
+
+    for(int i = 0; i < ARRAY_SIZE(operations); i++) 
+    {   
+        MathOperation* o = &operations[i];
         debugPrint("%c: %s\n", o->command, o->description);
-    }
-    printf("Also note that you start with 0 on the result so your first operation will work with 0 and your number.\n");
-    printf("Press B to add 10 to the operation, X to add 100, and Y to add 1000");
+        debugPrint("Also note that you start with 0 on the result so your first operation will work with 0 and your number.\n");
+        debugPrint("Press B to add 10 to the operation, X to add 100, and Y to add 1000");
+    }    
+
     return a;
 }
 
 // Stop asking for input if the user presses A
 static bool a_is_held = true;
-    
+
+static void printfloat(float value)
+{
+    int beforePeriod = (int)(value);
+    int afterPeriod = (value - beforePeriod) * 1000;
+    debugPrint("%d.%03d", beforePeriod, afterPeriod);
+}
+
 static bool isAPressed() 
 {
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) 
@@ -202,28 +212,37 @@ static char getCommand(void)
 
 static float getInput()
 {
-  while(true) 
-  {
-    XVideoWaitForVBlank(); // Wait for next frame
-    debugClearScreen();
-    SDL_GameControllerUpdate(); // Update gamepad values
+    while (true)
+    {   XVideoWaitForVBlank();
 
-    debugPrint("Your current input [*1000] is %d", (int)(user_input*1000.0f));
+        debugClearScreen();
 
-    float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
+        SDL_GameControllerUpdate();
 
-    
-  
-    if(isAPressed())
-    {
-        break;
+        debugPrint("Please give me the number you want to use for the operation. ");
+
+        Sint16 Yamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
+
+        if (Yamount > deadzone)
+        {
+            user_input += ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)0x8000)  / REFRESH_DEFAULT;
+        }
+        else if (Yamount < deadzone)
+        {
+            user_input -= ((float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / REFRESH_DEFAULT;
+        }
+
+        debugPrint("Your input is: ");
+        printfloat(user_input);
+
+        if(isAPressed())
+        {    
+            break;
+        }
     }
-  }
-  // Return the input
-  return user_input;
+    return user_input;
+    
 }
-
-
 int main()
 {
     
@@ -260,7 +279,9 @@ int main()
                         getInput();
                 }
                 result = o->handler(result, user_input);
-                debugPrint("Result is %f. Please tell me your next calculation.\n", result);
+                debugPrint("Result is ");
+                printfloat(result);
+                debugPrint("Please tell me your next calculation.\n");
             }
         }
 
