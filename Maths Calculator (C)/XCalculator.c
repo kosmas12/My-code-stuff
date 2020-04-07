@@ -136,7 +136,7 @@ static bool isAPressed()
 
 static char getCommand(void)
 {
-    int accessnum;
+    int accessnum = 0;
 
     MathOperation* o = &operations[accessnum];
 
@@ -148,18 +148,20 @@ static char getCommand(void)
 
         SDL_GameControllerUpdate();
 
+        debugPrint("Please tell me your desired calculation type. For help enter h.\n");
+
         Sint16 Xamount = (float)SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)0x8000; // Get input in range -1 to +1
             
         if (fabsf(Xamount) > 0.2f)
         {
             accessnum++;
         }
-        else if(fabsf(Xamount) < 0.2f)
+        else if(fabsf(Xamount) < -0.2f)
         {
             accessnum--;
         }
 
-        debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
+        debugPrint("Current selected mode is: %d", accessnum);
 
         if (isAPressed())
         {
@@ -219,8 +221,6 @@ int main()
                 
         }
     }
-
-    debugPrint("Please tell me your desired calculation type. For help enter h.\n");
 
     while(user_command != 'q')
     {
