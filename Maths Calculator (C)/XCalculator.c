@@ -155,7 +155,7 @@ static char getCommand(void)
             {
                 i++;
             }
-            else if (fabsf(Xamount) < -0.2f)
+            else if(fabsf(Xamount) < 0.2f)
             {
                 i--;
             }
