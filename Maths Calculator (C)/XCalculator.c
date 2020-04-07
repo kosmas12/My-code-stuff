@@ -129,8 +129,8 @@ static bool isAPressed()
     }
     else 
     {
-            a_is_held = false; // Remember that the user did not press A, so we can allow him to press it again
-            return false;
+        a_is_held = false; // Remember that the user did not press A, so we can allow him to press it again
+        return false;
     }
 }
 
@@ -155,10 +155,9 @@ static char getCommand(void)
             {
                 i++;
             }
-            else if (fabsf(Xamount) < 0.2f)
+            else if (fabsf(Xamount) < -0.2f)
             {
                 i--;
-
             }
             debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
 
