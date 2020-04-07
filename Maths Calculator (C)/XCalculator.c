@@ -49,11 +49,9 @@ static float squareRoot(float a, float b) { return sqrt(a); }
 
 static float power(float a, float b) {return pow(a, b);}
 
-static float reset(float a, float b) {a = 0.0f; return a;}
+static float reset(float a, float b) {a = 0.0f; return a;} 
 
 char user_command = '\0';
-
-const int deadzone = 4000;
 
 float user_input = 1.0f;
 
@@ -115,8 +113,10 @@ static bool a_is_held = true;
 
 static void printfloat(float value)
 {
+
     int beforePeriod = (int)(value);
     int afterPeriod = (value - beforePeriod) * 1000;
+
     debugPrint("%d.%03d", beforePeriod, afterPeriod);
 }
 
@@ -158,7 +158,7 @@ static float getAxis(int sdl_axis)
   }
 
   // Re-normalize after deadzone
-  return (amount - deadzone) / (1.0f - deadzone);
+  return amount;
 }
 
 static char getCommand(void)
@@ -213,7 +213,8 @@ static char getCommand(void)
 static float getInput()
 {
     while (true)
-    {   XVideoWaitForVBlank();
+    {   
+        XVideoWaitForVBlank();
 
         debugClearScreen();
 
@@ -223,17 +224,13 @@ static float getInput()
 
         float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
 
-        if (Yamount > 0.5f)
-        {
-            user_input += ((float)getAxis(SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / REFRESH_DEFAULT;
-        }
-        else if (Yamount < -0.5f)
-        {
-            user_input -= ((float)getAxis(SDL_CONTROLLER_AXIS_LEFTY) / (float)0x8000)  / REFRESH_DEFAULT;
-        }
+        user_input += Yamount / (float)REFRESH_DEFAULT;
 
         debugPrint("Your input is: ");
         printfloat(user_input);
+        debugPrint("\n");
+        printfloat(-Yamount);
+        debugPrint("\n");
 
         if(isAPressed())
         {    
@@ -279,9 +276,18 @@ int main()
                         getInput();
                 }
                 result = o->handler(result, user_input);
-                debugPrint("Result is ");
-                printfloat(result);
-                debugPrint("Please tell me your next calculation.\n");
+                while(true)
+                {
+                    debugClearScreen();
+
+                    debugPrint("Result is ");
+                    printfloat(result);
+                    debugPrint("Please tell me your next calculation. Press A to continue.\n");
+                    if(isAPressed())
+                    {
+                        break;
+                    }
+                }
             }
         }
 
