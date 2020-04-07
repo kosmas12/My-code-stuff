@@ -136,16 +136,16 @@ static bool isAPressed()
 
 static char getCommand(void)
 {
-    XVideoWaitForVBlank();
-
-    debugClearScreen();
-
-    SDL_GameControllerUpdate();
 
     Sint16 Xamount = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX);
 
     while (true)
     {
+        XVideoWaitForVBlank();
+
+        debugClearScreen();
+
+        SDL_GameControllerUpdate();
         for (int i = 0; i < ARRAY_SIZE(operations);)
         {
             MathOperation* o = &operations[i];
@@ -153,14 +153,13 @@ static char getCommand(void)
             if (Xamount > deadzone)
             {
                 i++;
-                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
             }
             else if (Xamount < -deadzone)
             {
                 i--;
-                debugPrint("Selected mode is: %c (%c)", o->command, o->description);
             }
-
+        debugPrint("Current selected mode is: %c %c", o->command, o->description);
+        
         }
         if (isAPressed())
         {
