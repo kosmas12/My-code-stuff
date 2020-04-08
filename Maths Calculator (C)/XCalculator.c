@@ -128,7 +128,7 @@ static bool x_is_pushed = true;
 
 static bool a_is_held = true;
 
-static bool isThingUsed(bool is_held, bool* was_held) 
+static bool isNewlyPressed(bool is_held, bool* was_held) 
 {
     if (is_held) 
     {
