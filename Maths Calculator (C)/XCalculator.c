@@ -234,7 +234,15 @@ static float getInput()
 
         float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
 
-        user_input += Yamount / (float)REFRESH_DEFAULT;
+        if(-Yamount > 0.5f)
+        {
+            user_input -= -Yamount / (float)REFRESH_DEFAULT;
+        }
+        else if(-Yamount < -0.5f)
+        {
+            user_input += -Yamount / (float)REFRESH_DEFAULT;
+        }
+
 
         debugPrint("Your input is: ");
         printfloat(user_input);
