@@ -66,8 +66,6 @@ static void Init()
     SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1"); 
 
     SDL_Init(SDL_INIT_JOYSTICK|SDL_INIT_VIDEO); //Initialize SDL for consoles
-    
-    SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
 }
 
 static MathOperation operations[] = {
