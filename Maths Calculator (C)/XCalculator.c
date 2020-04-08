@@ -128,24 +128,24 @@ static bool x_is_pushed = true;
 
 static bool a_is_held = true;
 
-static bool isThingUsed(bool thingdone, float sdl_action) 
+static bool isThingUsed(bool is_held, bool* was_held) 
 {
-    if (sdl_action) 
+    if (is_held) 
     {
-        if (thingdone) 
+        if (is_held) 
         {
             return false;
         } 
         else 
         {
-            thingdone = true;
+            is_held = true;
             return true;
         } 
         
     }
     else 
     {
-        x_is_pushed = false;
+        is_held = false;
         return false;
     }
 }
