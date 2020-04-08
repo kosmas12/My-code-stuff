@@ -126,26 +126,30 @@ static void printfloat(float value)
 
 static bool x_is_pushed = true;
 
+static bool x_was_pushed = true;
+
 static bool a_is_held = true;
+
+static bool a_was_held = true;
 
 static bool isNewlyPressed(bool is_held, bool* was_held) 
 {
     if (is_held) 
     {
-        if (was_held) 
+        if (*was_held) 
         {
             return false;
         } 
         else 
         {
-            was_held = true;
+            *was_held = true;
             return true;
         } 
         
     }
     else 
     {
-        was_held = false;
+        *was_held = false;
         return false;
     }
 }
@@ -186,32 +190,36 @@ static char getCommand(void)
         debugPrint("Please tell me your desired calculation type. For help enter h.\n");
 
         float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
-            
-       if(Xamount < -0.5f)
+
+       if(isNewlyPressed(x_is_pushed, &x_was_pushed))
        {
-           if(accessnum > 0)
+           if(Xamount < -0.5f)
            {
-               accessnum--;
-           }
-           else
-           {
-               accessnum = 0;
-           }
+               if(accessnum > 0)
+               {
+                    accessnum--;
+               }
+               else
+               {
+                    accessnum = 0;
+                }
+            }
+
+            else if(Xamount > 0.5f )
+            {
+                if(accessnum < ARRAY_SIZE(operations))
+                {
+                    accessnum++;
+                }
+            }
        }
 
-       else if(Xamount > 0.5f )
-       {
-           if(accessnum < ARRAY_SIZE(operations))
-           {
-               accessnum++;
-           }
-       }
 
         MathOperation* o = &operations[accessnum];
 
         debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
 
-        if (isThingUsed(a_is_held, SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)))
+        if (isNewlyPressed(a_is_held, &a_was_held))
         {
             user_command = o->command;
             break;
@@ -241,7 +249,7 @@ static float getInput()
         printfloat(user_input);
         debugPrint("\n");
         printfloat(-Yamount);
-        if(isThingUsed(a_is_held, SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)))
+        if(isNewlyPressed(a_is_held, &a_was_held))
         {    
             break;
         }
@@ -294,7 +302,7 @@ int main()
                     debugPrint("Result is ");
                     printfloat(result);
                     debugPrint("Please tell me your next calculation. Press A to continue.\n");
-                    if(isThingUsed(a_is_held, SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)))
+                    if(isNewlyPressed(a_is_held, &a_was_held))
                     {
                         break;
                     }
