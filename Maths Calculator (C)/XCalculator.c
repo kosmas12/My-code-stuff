@@ -126,11 +126,11 @@ static void printfloat(float value)
 
 static bool x_is_pushed = true;
 
-static bool x_was_pushed = true;
+static bool x_was_pushed = false;
 
 static bool a_is_held = true;
 
-static bool a_was_held = true;
+static bool a_was_held = false;
 
 static bool isNewlyPressed(bool is_held, bool* was_held) 
 {
@@ -191,6 +191,15 @@ static char getCommand(void)
 
         float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
 
+       if(x_is_pushed)
+       {
+           x_was_pushed = true;
+       }
+       else
+       {
+           x_was_pushed = false;
+       }
+        
        if(isNewlyPressed(x_is_pushed, &x_was_pushed))
        {
            if(Xamount < -0.5f)
@@ -249,6 +258,15 @@ static float getInput()
         printfloat(user_input);
         debugPrint("\n");
         printfloat(-Yamount);
+        if(a_is_held)
+        {
+            a_was_held = true;
+        }
+        else
+        {
+            a_was_held = false;
+        }
+        
         if(isNewlyPressed(a_is_held, &a_was_held))
         {    
             break;
