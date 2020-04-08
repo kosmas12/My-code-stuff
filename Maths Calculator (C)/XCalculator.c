@@ -114,14 +114,11 @@ static void printfloat(float value)
     int beforePeriod = (int)(value);
     int afterPeriod = (value - beforePeriod) * 1000;
 
-    if (value >= 0.0f)
+    if (value <= 0.0f && beforePeriod == 0)
     {
-        debugPrint("%d.%03d", beforePeriod, afterPeriod);
+        debugPrint("-");
     }
-    else
-    {
-        debugPrint("-%d.%03d", beforePeriod, abs(afterPeriod));
-    }
+    debugPrint("%d.%03d", beforePeriod, abs(afterPeriod));
     
 }
 
@@ -241,9 +238,6 @@ static float getInput()
         printfloat(user_input);
         debugPrint("\n");
         printfloat(-Yamount);
-        debugPrint("\n");
-        printfloat(Yamount);
-
         if(isAPressed())
         {    
             break;
