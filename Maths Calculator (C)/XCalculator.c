@@ -159,7 +159,7 @@ static float getAxis(int sdl_axis)
   const float deadzone = 0.2f;
 
   // Get input in range -1 to +1
-  float amount = (float)SDL_GameControllerGetAxis(controller, sdl_axis) / (float)0x8000;
+  float amount = (float)SDL_GameControllerGetAxis(controller, sdl_axis) / (float)0x7FFF;
 
   // Reject if the stick is in deadzone
   if (fabsf(amount) < deadzone) 
@@ -242,6 +242,7 @@ static float getInput()
         debugPrint("\n");
         printfloat(-Yamount);
         debugPrint("\n");
+        printfloat(Yamount);
 
         if(isAPressed())
         {    
