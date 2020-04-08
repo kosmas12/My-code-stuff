@@ -114,49 +114,52 @@ static void printfloat(float value)
     int beforePeriod = (int)(value);
     int afterPeriod = (value - beforePeriod) * 1000;
 
-    if (value <= 0.0f && beforePeriod == 0)
+    if (value < 0.0f && beforePeriod == 0)
     {
         debugPrint("-");
+        value = -value;
     }
     debugPrint("%d.%03d", beforePeriod, abs(afterPeriod));
     
 }
 
-// Stop asking for input if the user presses A
+
+static bool x_is_pushed = true;
+
 static bool a_is_held = true;
 
-
-
-static bool isAPressed() 
+static bool isThingUsed(bool thingdone, float sdl_action) 
 {
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) 
+    if (sdl_action) 
     {
-        // A is pressed, but do we allow it?
-        if (a_is_held) 
+        if (thingdone) 
         {
-            return false; // A is pressed now, but it was never released
+            return false;
         } 
         else 
         {
-            a_is_held = true; // Remember that A was not released since this press
-            return true; // A is pressed right now, but it wasn't pressed before: allow
-        }
-        
+            thingdone = true;
+            return true;
+        } 
         
     }
     else 
     {
-        a_is_held = false; // Remember that the user did not press A, so we can allow him to press it again
+        x_is_pushed = false;
         return false;
     }
 }
+
+
+
+
 
 static float getAxis(int sdl_axis) 
 {
   const float deadzone = 0.2f;
 
   // Get input in range -1 to +1
-  float amount = (float)SDL_GameControllerGetAxis(controller, sdl_axis) / (float)0x7FFF;
+  float amount = (float)SDL_GameControllerGetAxis(controller, sdl_axis) / (float)0x8000;
 
   // Reject if the stick is in deadzone
   if (fabsf(amount) < deadzone) 
@@ -208,7 +211,7 @@ static char getCommand(void)
 
         debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
 
-        if (isAPressed())
+        if (isThingUsed(a_is_held, SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)))
         {
             user_command = o->command;
             break;
@@ -238,7 +241,7 @@ static float getInput()
         printfloat(user_input);
         debugPrint("\n");
         printfloat(-Yamount);
-        if(isAPressed())
+        if(isThingUsed(a_is_held, SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)))
         {    
             break;
         }
@@ -284,20 +287,20 @@ int main()
                 result = o->handler(result, user_input);
                 while(true)
                 {
+                    XVideoWaitForVBlank();
+
                     debugClearScreen();
 
                     debugPrint("Result is ");
                     printfloat(result);
                     debugPrint("Please tell me your next calculation. Press A to continue.\n");
-                    if(isAPressed())
+                    if(isThingUsed(a_is_held, SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)))
                     {
                         break;
                     }
                 }
             }
         }
-
-        
     }
 
 
