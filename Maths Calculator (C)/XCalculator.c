@@ -124,6 +124,7 @@ static void printfloat(float value)
 
 static bool isNewlyPressed(bool is_held, bool* was_held) 
 {
+
     if (is_held) 
     {
         if (*was_held) 
@@ -145,15 +146,12 @@ static bool isNewlyPressed(bool is_held, bool* was_held)
 }
 
 
-
-
-
 static float getAxis(int sdl_axis) 
 {
 
   static bool x_is_pushed = true;
 
-  static bool x_was_pushed = false;
+  static bool x_was_pushed = true;
 
   const float deadzone = 0.2f;
 
@@ -174,7 +172,11 @@ static char getCommand(void)
 {
     static bool a_is_held = true;
 
-    static bool a_was_held = false;
+    static bool a_was_held = true;
+
+    static bool x_is_pushed = true;
+
+    static bool x_was_pushed = true;
 
     int accessnum = 0;
 
@@ -198,15 +200,42 @@ static char getCommand(void)
 
         bool was_left_analog_right = false;
 
-        if(isNewlyPressed(is_left_analog_left, &was_left_analog_left)) { accessnum--; }
+        if(accessnum > 0)
+        {
+            if(isNewlyPressed(is_left_analog_left, &was_left_analog_left)) { accessnum--; }
+        }
+        else
+        {
+            accessnum = 0;
+        }
+        
 
-        if(isNewlyPressed(is_left_analog_right, &was_left_analog_right)) { accessnum++; }
+        if(accessnum < ARRAY_SIZE(operations) - 1)
+        {
+            if(isNewlyPressed(is_left_analog_right, &was_left_analog_right)) { accessnum++; }
+        }
+        else
+        {
+            accessnum = ARRAY_SIZE(operations) - 1;
+        }
+        
+
+        
 
 
         MathOperation* o = &operations[accessnum];
 
         debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
 
+        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+        {
+            a_is_held = true;
+        }
+        else
+        {
+            a_is_held = false;
+        }
+        
         if (isNewlyPressed(a_is_held, &a_was_held))
         {
             user_command = o->command;
@@ -221,7 +250,7 @@ static float getInput()
 {
     static bool a_is_held = true;
 
-    static bool a_was_held = false;
+    static bool a_was_held = true;
 
     while (true)
     {   
@@ -242,15 +271,16 @@ static float getInput()
         printfloat(user_input);
         debugPrint("\n");
         printfloat(-Yamount);
-        if(a_is_held)
+
+        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
         {
-            a_was_held = true;
+            a_is_held = true;
         }
         else
         {
-            a_was_held = false;
+            a_is_held = false;
         }
-        
+
         if(isNewlyPressed(a_is_held, &a_was_held))
         {    
             break;
@@ -264,7 +294,7 @@ int main()
     
     static bool a_is_held = true;
 
-    static bool a_was_held = false;
+    static bool a_was_held = true;
 
     Init();
 
@@ -307,7 +337,17 @@ int main()
 
                     debugPrint("Result is ");
                     printfloat(result);
-                    debugPrint("Please tell me your next calculation. Press A to continue.\n");
+                    debugPrint(". Please tell me your next calculation. Press A to continue.\n");
+
+                    if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+                    {
+                        a_is_held = true;
+                    }
+                    else
+                    {
+                        a_is_held = false;
+                    }
+
                     if(isNewlyPressed(a_is_held, &a_was_held))
                     {
                         break;
