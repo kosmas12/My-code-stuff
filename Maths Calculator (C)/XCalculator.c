@@ -124,14 +124,6 @@ static void printfloat(float value)
 }
 
 
-static bool x_is_pushed = true;
-
-static bool x_was_pushed = false;
-
-static bool a_is_held = true;
-
-static bool a_was_held = false;
-
 static bool isNewlyPressed(bool is_held, bool* was_held) 
 {
     if (is_held) 
@@ -160,6 +152,11 @@ static bool isNewlyPressed(bool is_held, bool* was_held)
 
 static float getAxis(int sdl_axis) 
 {
+
+  static bool x_is_pushed = true;
+
+  static bool x_was_pushed = false;
+
   const float deadzone = 0.2f;
 
   // Get input in range -1 to +1
@@ -177,6 +174,10 @@ static float getAxis(int sdl_axis)
 
 static char getCommand(void)
 {
+    static bool a_is_held = true;
+
+    static bool a_was_held = false;
+
     int accessnum = 0;
 
     while (true)
@@ -191,37 +192,17 @@ static char getCommand(void)
 
         float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
 
-       if(x_is_pushed)
-       {
-           x_was_pushed = true;
-       }
-       else
-       {
-           x_was_pushed = false;
-       }
-        
-       if(isNewlyPressed(x_is_pushed, &x_was_pushed))
-       {
-           if(Xamount < -0.5f)
-           {
-               if(accessnum > 0)
-               {
-                    accessnum--;
-               }
-               else
-               {
-                    accessnum = 0;
-                }
-            }
+        bool is_left_analog_left = Xamount < -0.5f;
 
-            else if(Xamount > 0.5f )
-            {
-                if(accessnum < ARRAY_SIZE(operations))
-                {
-                    accessnum++;
-                }
-            }
-       }
+        bool is_left_analog_right = Xamount > 0.5f;
+
+        bool was_left_analog_left = false;
+
+        bool was_left_analog_right = false;
+
+        if(isNewlyPressed(is_left_analog_left, &was_left_analog_left)) { accessnum--; }
+
+        if(isNewlyPressed(is_left_analog_right, &was_left_analog_right)) { accessnum++; }
 
 
         MathOperation* o = &operations[accessnum];
@@ -234,11 +215,16 @@ static char getCommand(void)
             break;
         }
     }
+
     return user_command;
 }
 
 static float getInput()
 {
+    static bool a_is_held = true;
+
+    static bool a_was_held = false;
+
     while (true)
     {   
         XVideoWaitForVBlank();
@@ -278,6 +264,10 @@ static float getInput()
 int main()
 {
     
+    static bool a_is_held = true;
+
+    static bool a_was_held = false;
+
     Init();
 
 
