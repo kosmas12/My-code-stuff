@@ -132,20 +132,20 @@ static bool isThingUsed(bool is_held, bool* was_held)
 {
     if (is_held) 
     {
-        if (is_held) 
+        if (was_held) 
         {
             return false;
         } 
         else 
         {
-            is_held = true;
+            was_held = true;
             return true;
         } 
         
     }
     else 
     {
-        is_held = false;
+        was_held = false;
         return false;
     }
 }
