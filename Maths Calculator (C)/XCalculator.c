@@ -108,17 +108,27 @@ static float help(float a, float b)
     return a;
 }
 
-// Stop asking for input if the user presses A
-static bool a_is_held = true;
-
 static void printfloat(float value)
 {
 
     int beforePeriod = (int)(value);
     int afterPeriod = (value - beforePeriod) * 1000;
 
-    debugPrint("%d.%03d", beforePeriod, abs(afterPeriod));
+    if (value >= 0.0f)
+    {
+        debugPrint("%d.%03d", beforePeriod, afterPeriod);
+    }
+    else
+    {
+        debugPrint("-%d.%03d", beforePeriod, abs(afterPeriod));
+    }
+    
 }
+
+// Stop asking for input if the user presses A
+static bool a_is_held = true;
+
+
 
 static bool isAPressed() 
 {
