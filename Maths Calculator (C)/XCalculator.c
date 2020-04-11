@@ -106,19 +106,21 @@ static float help(float a, float b)
     return a;
 }
 
-static void printfloat(float value)
-{
+// This function can only positive float values (negatives are not supported!)
+void printpositivefloat(float value) {
+    unsigned int notround = (unsigned int)(value * 1000.0 + 0.5f);
+    unsigned int beforeperiod = notround / 1000;
+    unsigned int afterperiod = notround % 1000; // I'd just use endallroundingmadness % 1000
+    debugPrint("%u.%03u", beforeperiod, afterperiod);
+}
 
-    int beforePeriod = (int)(value);
-    int afterPeriod = (value - beforePeriod) * 1000;
-
-    if (value < 0.0f && beforePeriod == 0)
-    {
-        debugPrint("-");
-        value = -value;
-    }
-    debugPrint("%d.%03d", beforePeriod, abs(afterPeriod));
-    
+// This function can print positive and negative float values
+void printfloat(float value) {
+  if (value < 0.0f) {
+    debugPrint("-"); // Draw sign
+    value = -value; // Make value positive
+  }
+  printpositivefloat(value); // Print positive value
 }
 
 
@@ -148,10 +150,6 @@ static bool isNewlyPressed(bool is_held, bool* was_held)
 
 static float getAxis(int sdl_axis) 
 {
-
-  static bool x_is_pushed = true;
-
-  static bool x_was_pushed = true;
 
   const float deadzone = 0.2f;
 
@@ -188,7 +186,9 @@ static char getCommand(void)
 
         SDL_GameControllerUpdate();
 
-        debugPrint("Please tell me your desired calculation type. For help enter h.\n");
+        debugPrint("Current result is: ");
+        printfloat(result);
+        debugPrint(". Please tell me your desired calculation type. For help enter h.\n");
 
         float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
 
@@ -219,10 +219,6 @@ static char getCommand(void)
             accessnum = ARRAY_SIZE(operations) - 1;
         }
         
-
-        
-
-
         MathOperation* o = &operations[accessnum];
 
         debugPrint("Current selected mode is: %c (%s)", o->command, o->description);
@@ -264,13 +260,23 @@ static float getInput()
 
         float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
 
-        user_input += -Yamount / (float)REFRESH_DEFAULT; //work around an SDL inversion bug by using -Yamount
+        if(Yamount < -0.5f) //use negative value for the controller going up because Y axis is inverted in nxdk-sdl
+        {
+            user_input += Yamount / (float)REFRESH_DEFAULT;
+        }
+        else if (Yamount > 0.5f)
+        {
+            user_input -= Yamount / (float)REFRESH_DEFAULT;
+        }
+        
+
+
 
 
         debugPrint("Your input is: ");
         printfloat(user_input);
         debugPrint("\n");
-        printfloat(-Yamount);
+        printfloat(Yamount);
 
         if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
         {
@@ -294,7 +300,7 @@ int main()
     
     static bool a_is_held = true;
 
-    static bool a_was_held = true;
+    static bool a_was_held = false;
 
     Init();
 
@@ -329,33 +335,7 @@ int main()
                         getInput();
                 }
                 result = o->handler(result, user_input);
-                while(true)
-                {
-                    XVideoWaitForVBlank();
-
-                    debugClearScreen();
-
-                    debugPrint("Result is ");
-                    printfloat(result);
-                    debugPrint(". Please tell me your next calculation. Press A to continue.\n");
-
-                    if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
-                    {
-                        a_is_held = true;
-                    }
-                    else
-                    {
-                        a_is_held = false;
-                    }
-
-                    if(isNewlyPressed(a_is_held, &a_was_held))
-                    {
-                        break;
-                    }
-                }
             }
         }
     }
-
-
 }
