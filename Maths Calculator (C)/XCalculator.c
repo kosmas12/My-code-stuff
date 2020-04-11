@@ -260,13 +260,13 @@ static float getInput()
 
         float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
 
-        if(Yamount < -0.5f) //use negative value for the controller going up because Y axis is inverted in nxdk-sdl
+        if(-Yamount > 0.5f) //use -Yamount for the controller going up because Y axis is inverted in nxdk-sdl
         {
-            user_input += Yamount / (float)REFRESH_DEFAULT;
+            user_input += -Yamount / (float)REFRESH_DEFAULT;
         }
-        else if (Yamount > 0.5f)
+        else if (-Yamount < -0.5f)
         {
-            user_input -= Yamount / (float)REFRESH_DEFAULT;
+            user_input -= -Yamount / (float)REFRESH_DEFAULT;
         }
         
 
@@ -276,7 +276,7 @@ static float getInput()
         debugPrint("Your input is: ");
         printfloat(user_input);
         debugPrint("\n");
-        printfloat(Yamount);
+        printfloat(-Yamount);
 
         if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
         {
