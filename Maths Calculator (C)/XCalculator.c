@@ -91,17 +91,23 @@ static float quit(float a, float b) { debugPrint("Exiting...\n"); exit(0);}
 static float help(float a, float b)
 {
 
-    XVideoWaitForVBlank();
+    while (true)
+    {
+        XVideoWaitForVBlank();
 
-    debugClearScreen();
+        debugClearScreen();
 
-    for(int i = 0; i < ARRAY_SIZE(operations); i++) 
-    {   
-        MathOperation* o = &operations[i];
-        debugPrint("%c: %s\n", o->command, o->description);
+        for(int i = 0; i < ARRAY_SIZE(operations); i++) 
+        {   
+            MathOperation* o = &operations[i];
+            debugPrint("%c: %s\n", o->command, o->description);
+        }
         debugPrint("Also note that you start with 0 on the result so your first operation will work with 0 and your number.\n");
-        debugPrint("Press B to add 10 to the operation, X to add 100, and Y to add 1000");
-    }    
+        debugPrint("Press B to add 10 to the operation, X to add 100, and Y to add 1000");    
+    }
+    
+
+    
 
     return a;
 }
@@ -124,7 +130,7 @@ void printfloat(float value) {
 }
 
 
-static bool isNewlyPressed(bool is_held, bool* was_held) 
+static bool isNewlyPressed(bool is_held, bool *was_held) 
 {
 
     if (is_held) 
