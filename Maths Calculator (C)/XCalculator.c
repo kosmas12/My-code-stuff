@@ -14,6 +14,8 @@ static float help(float a, float b);
 
 static float quit(float a, float b);
 
+static bool isNewlyPressed(bool is_held, bool *was_held);
+
 const float rads_per_degree = 0.01745329252;
 
 float rads;
@@ -90,6 +92,10 @@ static float quit(float a, float b) { debugPrint("Exiting...\n"); exit(0);}
 
 static float help(float a, float b)
 {
+    static bool a_is_held = true;
+
+    static bool a_was_held = true;
+
 
     while (true)
     {
@@ -103,12 +109,23 @@ static float help(float a, float b)
             debugPrint("%c: %s\n", o->command, o->description);
         }
         debugPrint("Also note that you start with 0 on the result so your first operation will work with 0 and your number.\n");
-        debugPrint("Press B to add 10 to the operation, X to add 100, and Y to add 1000");    
+        debugPrint("Press B to add 10 to the operation, X to add 100, and Y to add 1000");
+
+        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+        {
+            a_is_held = true;
+        }
+        else
+        {
+            a_is_held = false;
+        }
+        
+        if (isNewlyPressed(a_is_held, &a_was_held))
+        {
+            break;
+        }
     }
     
-
-    
-
     return a;
 }
 
@@ -154,9 +171,14 @@ static bool isNewlyPressed(bool is_held, bool *was_held)
 }
 
 
+float remap(float value, float from_min, float from_max, float to_min, float to_max){
+    value = (value - from_min) / (from_max - from_min);
+    value = value * (to_max - to_min) + to_min;
+    return value;
+}
+
 static float getAxis(int sdl_axis) 
 {
-
   const float deadzone = 0.2f;
 
   // Get input in range -1 to +1
@@ -168,7 +190,12 @@ static float getAxis(int sdl_axis)
     return 0.0f;
   }
 
-  // Re-normalize after deadzone
+  if (amount > 0.0f) {
+  amount = remap(amount,  +0.2f, +1.0f,  0.0f, +1.0f); // Remap from +[0.2, 1.0] to +[0.0, 1.0]
+  } 
+  else {
+  amount = -remap(-amount,  +0.2f, +1.0f,  0.0f, +1.0f); // Remap from -[0.2, 1.0] to -[0.0, 1.0]
+  }
   return amount;
 }
 
@@ -254,6 +281,18 @@ static float getInput()
 
     static bool a_was_held = true;
 
+    static bool b_is_held = true;
+
+    static bool b_was_held = true;
+
+    static bool x_is_held = true;
+
+    static bool x_was_held = true;
+
+    static bool y_is_held = true;
+
+    static bool y_was_held = true;
+
     while (true)
     {   
         XVideoWaitForVBlank();
@@ -266,23 +305,14 @@ static float getInput()
 
         float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
 
-        if(-Yamount > 0.5f) //use -Yamount for the controller going up because Y axis is inverted in nxdk-sdl
-        {
-            user_input += -Yamount / (float)REFRESH_DEFAULT;
-        }
-        else if (-Yamount < -0.5f)
-        {
-            user_input -= -Yamount / (float)REFRESH_DEFAULT;
-        }
-        
-
-
-
+        user_input += -Yamount / (float)REFRESH_60HZ;
 
         debugPrint("Your input is: ");
         printfloat(user_input);
         debugPrint("\n");
         printfloat(-Yamount);
+
+
 
         if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
         {
@@ -292,10 +322,46 @@ static float getInput()
         {
             a_is_held = false;
         }
+        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B))
+        {
+            b_is_held = true;
+        }
+        else
+        {
+            b_is_held = false;
+        }
+        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_X))
+        {
+            x_is_held = true;
+        }
+        else
+        {
+            x_is_held = false;
+        }
+        if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_Y))
+        {
+            y_is_held = true;
+        }
+        else
+        {
+            y_is_held = false;
+        }
 
         if(isNewlyPressed(a_is_held, &a_was_held))
         {    
             break;
+        }
+        else if(isNewlyPressed(b_is_held, &b_was_held))
+        {    
+            user_input += 10;
+        }
+        else if(isNewlyPressed(x_is_held, &x_was_held))
+        {    
+            user_input += 100;
+        }
+        else if(isNewlyPressed(y_is_held, &y_was_held))
+        {    
+            user_input += 1000;
         }
     }
     return user_input;
