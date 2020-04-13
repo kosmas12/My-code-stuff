@@ -63,7 +63,7 @@ SDL_GameController *controller = NULL;
 
 static void Init()
 {
-    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+    XVideoSetMode(640, 480, 32, REFRESH_60HZ);
 
     SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1"); 
 
@@ -96,12 +96,13 @@ static float help(float a, float b)
 
     static bool a_was_held = true;
 
-
     while (true)
     {
         XVideoWaitForVBlank();
 
         debugClearScreen();
+
+        SDL_GameControllerUpdate();
 
         for(int i = 0; i < ARRAY_SIZE(operations); i++) 
         {   
@@ -119,13 +120,13 @@ static float help(float a, float b)
         {
             a_is_held = false;
         }
-        
+
         if (isNewlyPressed(a_is_held, &a_was_held))
         {
             break;
         }
     }
-    
+    debugPrint("ẗest");
     return a;
 }
 
@@ -191,10 +192,10 @@ static float getAxis(int sdl_axis)
   }
 
   if (amount > 0.0f) {
-  amount = remap(amount,  +0.2f, +1.0f,  0.0f, +1.0f); // Remap from +[0.2, 1.0] to +[0.0, 1.0]
+  amount = remap(amount,  deadzone, +1.0f,  0.0f, +1.0f); // Remap from +[0.2, 1.0] to +[0.0, 1.0]
   } 
   else {
-  amount = -remap(-amount,  +0.2f, +1.0f,  0.0f, +1.0f); // Remap from -[0.2, 1.0] to -[0.0, 1.0]
+  amount = -remap(-amount,  deadzone, +1.0f,  0.0f, +1.0f); // Remap from -[0.2, 1.0] to -[0.0, 1.0]
   }
   return amount;
 }
