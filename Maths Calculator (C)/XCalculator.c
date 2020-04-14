@@ -17,6 +17,12 @@ static float quit(float a, float b);
 
 static bool isNewlyPressed(bool is_held, bool *was_held);
 
+static char getCommand();
+
+static float getInput();
+
+static float subcalc(float a, float b);
+
 const float rads_per_degree = 0.01745329252; // Rads per degree for the *D functions
 
 typedef struct {
@@ -50,7 +56,7 @@ static float squareRoot(float a, float b) { return sqrt(a); }
 
 static float power(float a, float b) {return pow(a, b); }
 
-static float reset(float a, float b) {a = 0.0f; return a; } 
+static float reset(float a, float b) {a = 0.0f; return a; }
 
 char user_command = '\0'; // Initialize a default character for the user's command (\0 is NULL)
 
@@ -79,8 +85,8 @@ static MathOperation operations[] = {
   { .command='t', .description="Tan with angle in degrees", .use_default_input=true, .handler=tanD},
   { .command='T', .description="Tan with angle in radians", .use_default_input=true, .handler=tanR},
   { .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
+  { .command='(', .description="Subcalculator", .use_default_input=false, .handler=subcalc},
   { .command='e', .description="Reset result", .use_default_input=false, .handler=reset},
-  { .command='q', .description="Quit", .use_default_input=false, .handler=quit },
   { .command='h', .description="Help page", .use_default_input=false, .handler=help}
 }; // Create the array with the command characters, their descriptions, if they use the default input handler and what is their operation handler
 
@@ -121,7 +127,7 @@ static float help(float a, float b) {
     return a; //When exiting the loop return the variable a
 }
 
-// This function can only positive float values (negatives are not supported!)
+// This function can only print positive float values (negatives are not supported!)
 void printpositivefloat(float value) {
     unsigned int notround = (unsigned int)(value * 1000.0 + 0.5f); // Notround can only have positive values. It is our value by 1000 and then added 0.5
     unsigned int beforeperiod = notround / 1000; // Beforeperiod (.) is notround divided by 1000 (because we multiply by 1000 in notround)
@@ -131,14 +137,37 @@ void printpositivefloat(float value) {
 
 // This function can print positive and negative float values
 void printfloat(float value) {
-  if (value < 0.0f) { // If value is negative
-    debugPrint("-"); // Draw sign
-    value = -value; // Make value positive
-  }
-  printpositivefloat(value); // Print positive value
+    if (value < 0.0f) { // If value is negative
+        debugPrint("-"); // Draw sign
+        value = -value; // Make value positive
+    }
+    printpositivefloat(value); // Print positive value
 }
 
+static float subcalc(float a, float b) {
+    float totalres = 0.0f;
 
+    while(user_command != 'q') {
+
+        getCommand();
+
+        for (int i = 0; i < ARRAY_SIZE(operations); i++) {
+
+            MathOperation* o = &operations[i]; // Iterate through operations[] using i from the for() loop
+
+            if (o->command == user_command) { // When the command number of the index of i in operations[] equals our user_command
+        
+                if(o->use_default_input == true) { // If it uses the default input handler
+                
+                    getInput();
+                }
+                totalres += o->handler(result, user_input); // Calculate our total result and store it
+                user_input = 1.0f; // Resets user_input after every operation
+            }
+        }
+    }
+    return totalres;
+}
 static bool isNewlyPressed(bool is_held, bool *was_held) {
 
     if (is_held) { // If the button is held in this frame
@@ -159,8 +188,7 @@ static bool isNewlyPressed(bool is_held, bool *was_held) {
 
 
 float remap(float value, float from_min, float from_max, float to_min, float to_max) { // Function to remap values to other values
-    value = (value - from_min) / (from_max - from_min);
-    value = value * (to_max - to_min) + to_min;
+    value = ((value - from_min) / (from_max - from_min)) * (to_max - to_min) + to_min;
     return value;
 }
 
@@ -185,7 +213,7 @@ static float getAxis(int sdl_axis) { // Function to get an axis from the control
   return amount;
 }
 
-static char getCommand(void) {
+static char getCommand() {
     static bool a_is_held = true;
 
     static bool a_was_held = true;
@@ -353,6 +381,7 @@ int main() {
     }
 
     while(user_command != 'q') {
+
         getCommand();
 
         for (int i = 0; i < ARRAY_SIZE(operations); i++) {
