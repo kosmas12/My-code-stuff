@@ -366,7 +366,7 @@ int main() {
                     getInput();
                 }
                 result = o->handler(result, user_input); // Calculate our result and store it
-                user_input = 1.0f; // Reset user_input after every operation
+                user_input = 1.0f; // Resets user_input after every operation
             }
         }
     }
