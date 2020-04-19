@@ -21,7 +21,7 @@ static char getCommand();
 
 static float getInput();
 
-static float subcalc(float a, float b);
+static void minicalc(float a, float b);
 
 const float rads_per_degree = 0.01745329252; // Rads per degree for the *D functions
 
@@ -72,6 +72,36 @@ static void Init() {
     SDL_Init(SDL_INIT_JOYSTICK|SDL_INIT_VIDEO); // Initialize SDL
 }
 
+static void checkForMinicalc() {
+    bool start_is_held = true;
+    bool start_was_held = true;
+
+    while (true)
+    {
+
+        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START))
+        {
+            start_is_held = true;
+        }
+        else
+        {
+            start_is_held = false;
+        }
+
+        if (isNewlyPressed(start_is_held, &start_was_held))
+        {
+            minicalc(result, user_input);
+            break;
+        }
+        else
+        {
+            break;
+        }
+        
+    } 
+}
+
+
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
   { .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
@@ -85,7 +115,6 @@ static MathOperation operations[] = {
   { .command='t', .description="Tan with angle in degrees", .use_default_input=true, .handler=tanD},
   { .command='T', .description="Tan with angle in radians", .use_default_input=true, .handler=tanR},
   { .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
-  { .command='(', .description="Subcalculator", .use_default_input=false, .handler=subcalc},
   { .command='e', .description="Reset result", .use_default_input=false, .handler=reset},
   { .command='h', .description="Help page", .use_default_input=false, .handler=help}
 }; // Create the array with the command characters, their descriptions, if they use the default input handler and what is their operation handler
@@ -144,30 +173,6 @@ void printfloat(float value) {
     printpositivefloat(value); // Print positive value
 }
 
-static float subcalc(float a, float b) {
-    float totalres = 0.0f;
-
-    while(user_command != 'q') {
-
-        getCommand();
-
-        for (int i = 0; i < ARRAY_SIZE(operations); i++) {
-
-            MathOperation* o = &operations[i]; // Iterate through operations[] using i from the for() loop
-
-            if (o->command == user_command) { // When the command number of the index of i in operations[] equals our user_command
-        
-                if(o->use_default_input == true) { // If it uses the default input handler
-                
-                    getInput();
-                }
-                totalres += o->handler(result, user_input); // Calculate our total result and store it
-                user_input = 1.0f; // Resets user_input after every operation
-            }
-        }
-    }
-    return totalres;
-}
 static bool isNewlyPressed(bool is_held, bool *was_held) {
 
     if (is_held) { // If the button is held in this frame
@@ -281,6 +286,48 @@ static char getCommand() {
     return user_command;
 }
 
+
+static void minicalc(float a, float b) {
+    
+    bool start_is_held = true;
+
+    bool start_was_held = true;
+
+    while (true)
+    {
+        getCommand();
+
+        for (int i = 0; i < ARRAY_SIZE(operations); i++) {
+
+            MathOperation* o = &operations[i]; // Iterate through operations[] using i from the for() loop
+
+            if (o->command == user_command) { // When the command number of the index of i in operations[] equals our user_command
+            
+                if(o->use_default_input == true) { // If it uses the default input handler
+                
+                    getInput();
+                }
+                b = o->handler(a, b); // Calculate our result and store it
+                user_input += b;
+            }
+        }
+
+        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START))
+        {
+            start_is_held = true;
+        }
+        else
+        {
+            start_is_held = false;
+        }
+
+        if(isNewlyPressed(start_is_held, &start_was_held)){
+
+            break;
+        }
+    }
+}
+
 static float getInput() {
     static bool a_is_held = true;
 
@@ -304,6 +351,8 @@ static float getInput() {
         debugClearScreen();
 
         SDL_GameControllerUpdate();
+
+        checkForMinicalc();
 
         debugPrint("Please give me the number you want to use for the operation. ");
 
