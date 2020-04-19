@@ -74,6 +74,7 @@ static void Init() {
 
 static void checkForMinicalc() {
     bool start_is_held = true;
+
     bool start_was_held = true;
 
     while (true)
@@ -345,7 +346,8 @@ static float getInput() {
 
     static bool y_was_held = true;
 
-    while (true) {   
+    while (true) {  
+
         XVideoWaitForVBlank();
 
         debugClearScreen();
@@ -358,7 +360,7 @@ static float getInput() {
 
         float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
 
-        user_input += -Yamount / (float)REFRESH_60HZ; // user_input is equal to its current value + inverted Yamount (Workaround for inverted Y axis)
+        user_input += -Yamount / (float) 144; // user_input is equal to its current value + inverted Yamount (Workaround for inverted Y axis)
 
         debugPrint("Your input is: ");
         printfloat(user_input);
