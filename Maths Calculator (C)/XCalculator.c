@@ -281,8 +281,6 @@ static float getInput() {
 
         SDL_GameControllerUpdate();
 
-        checkForMinicalc();
-
         debugPrint("Please give me the number you want to use for the operation. ");
 
         float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
