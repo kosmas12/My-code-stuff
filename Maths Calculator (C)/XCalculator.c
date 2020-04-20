@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
+#ifdef NXDK
 #include <SDL.h>
 #include <SDL_gamecontroller.h>
 #include <hal/debug.h>
 #include <hal/video.h>
 #include <windows.h>
+#endif
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
@@ -14,8 +16,9 @@
 static float help(float a, float b);
 
 static float quit(float a, float b);
-
+#ifdef NXDK
 static bool isNewlyPressed(bool is_held, bool *was_held);
+#endif
 
 static char getCommand();
 
@@ -64,6 +67,7 @@ float user_input = 1.0f; // Initialize a default user_input of 1.0
 
 float result = 0.0f; // Initialize a default result which is what we will be working on
 
+#ifdef NXDK
 SDL_GameController *controller = NULL; // We initialize a controller and give it a NULL value for now
 
 static void Init() {
@@ -71,37 +75,40 @@ static void Init() {
 
     SDL_Init(SDL_INIT_JOYSTICK|SDL_INIT_VIDEO); // Initialize SDL
 }
+#endif
 
 static void checkForMinicalc() {
+#ifdef NXDK
     bool start_is_held = true;
 
     bool start_was_held = true;
+#endif
+while (true) {
+    #ifdef NXDK
+    SDL_GameControllerUpdate();
 
-    while (true)
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START)) {
+
+        start_is_held = true;
+    }
+    else {
+
+        start_is_held = false;
+    }
+
+    if (isNewlyPressed(start_is_held, &start_was_held)) {
+
+        minicalc(result, user_input);
+    }
+
+    }
+    #else
+    if (user_input == '(')
     {
-
-        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START))
-        {
-            start_is_held = true;
-        }
-        else
-        {
-            start_is_held = false;
-        }
-
-        if (isNewlyPressed(start_is_held, &start_was_held))
-        {
-            minicalc(result, user_input);
-            break;
-        }
-        else
-        {
-            break;
-        }
-        
-    } 
+        minicalc(result, user_input);
+    }
+    #endif
 }
-
 
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
@@ -115,14 +122,26 @@ static MathOperation operations[] = {
   { .command='C', .description="Cos with angle in radians", .use_default_input=true, .handler=cosR},
   { .command='t', .description="Tan with angle in degrees", .use_default_input=true, .handler=tanD},
   { .command='T', .description="Tan with angle in radians", .use_default_input=true, .handler=tanR},
+  #ifndef NXDK
+  { .command='(', .description="Mini calculator", .use_default_input=false, .handler=minicalc},
+  #endif
   { .command='p', .description="Raise to the power of", .use_default_input=true, .handler=power},
   { .command='e', .description="Reset result", .use_default_input=false, .handler=reset},
   { .command='h', .description="Help page", .use_default_input=false, .handler=help}
 }; // Create the array with the command characters, their descriptions, if they use the default input handler and what is their operation handler
 
-static float quit(float a, float b) { debugPrint("Exiting...\n"); exit(0); }
+static void quit() { 
+    #ifdef NXDK
+    debugPrint("Exiting...\n");
+    #else
+    printf("Exiting... \n");
+    #endif
+    exit(0); 
+}
 
 static float help(float a, float b) {
+
+    #ifdef NXDK
     static bool a_is_held = true; // Create a bool for checking if A is held in this frame
 
     static bool a_was_held = true; // Create a bool for checking if A was held in the previous frame
@@ -137,6 +156,7 @@ static float help(float a, float b) {
         for(int i = 0; i < ARRAY_SIZE(operations); i++) { // For the time that i (initialized with 0) is less than the Array size of operations  
             MathOperation* o = &operations[i]; // Pointer to the memory address of operations[] with index number i (changes in each iteration) called o. Expects pointing to MathOperation things only
             debugPrint("%c: %s\n", o->command, o->description); // Print the command and description visible in the current array index
+            printf("%c: %s\n", o->command, o->description);
         }
         // After the loop is over, print these messages that should be printed only once
         debugPrint("Also note that you start with 0 on the result so your first operation will work with 0 and your number.\n");
@@ -153,10 +173,18 @@ static float help(float a, float b) {
         if (isNewlyPressed(a_is_held, &a_was_held)) { // If A is newly pressed
             break; // Exit the while(true) loop
         }
+
     }
+    #else
+    for(int i = 0; i < ARRAY_SIZE(operations); i++) { // For the time that i (initialized with 0) is less than the Array size of operations  
+        MathOperation* o = &operations[i]; // Pointer to the memory address of operations[] with index number i (changes in each iteration) called o. Expects pointing to MathOperation things only
+        printf("%c: %s\n", o->command, o->description);
+    }
+    #endif
     return a; //When exiting the loop return the variable a
 }
 
+#ifdef NXDK
 // This function can only print positive float values (negatives are not supported!)
 void printpositivefloat(float value) {
     unsigned int notround = (unsigned int)(value * 1000.0 + 0.5f); // Notround can only have positive values. It is our value by 1000 and then added 0.5
@@ -218,8 +246,10 @@ static float getAxis(int sdl_axis) { // Function to get an axis from the control
   }
   return amount;
 }
+#endif
 
 static char getCommand() {
+    #ifdef NXDK
     static bool a_is_held = true;
 
     static bool a_was_held = true;
@@ -282,20 +312,25 @@ static char getCommand() {
             user_command = o->command; // Set the user command to the current command in operations[]
             break;
         }
+        
     }
-
+    #else
+    scanf("%c", &user_command);
+    #endif
     return user_command;
 }
 
 
 static void minicalc(float a, float b) {
     
+    #ifdef NXDK
     bool start_is_held = true;
 
     bool start_was_held = true;
+    #endif
 
-    while (true)
-    {
+    while (true) {
+    
         getCommand();
 
         for (int i = 0; i < ARRAY_SIZE(operations); i++) {
@@ -312,24 +347,24 @@ static void minicalc(float a, float b) {
                 user_input += b;
             }
         }
-
-        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START))
-        {
+        #ifdef NXDK
+        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START)) {
             start_is_held = true;
         }
-        else
-        {
+        else {
             start_is_held = false;
         }
 
-        if(isNewlyPressed(start_is_held, &start_was_held)){
+        if(isNewlyPressed(start_is_held, &start_was_held)) {
 
             break;
         }
+        #endif
     }
 }
 
 static float getInput() {
+    #ifdef NXDK
     static bool a_is_held = true;
 
     static bool a_was_held = true;
@@ -347,7 +382,6 @@ static float getInput() {
     static bool y_was_held = true;
 
     while (true) {  
-
         XVideoWaitForVBlank();
 
         debugClearScreen();
@@ -365,9 +399,6 @@ static float getInput() {
         debugPrint("Your input is: ");
         printfloat(user_input);
         debugPrint("\n");
-        printfloat(-Yamount);
-
-
 
         if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
             a_is_held = true;
@@ -407,11 +438,15 @@ static float getInput() {
             user_input += 1000;
         }
     }
+    #else
+    printf("Please give me the number you want to use for the operation. ");
+    scanf("%f", &user_input);
+    #endif
     return user_input;
     
 }
 int main() {
-    
+    #ifdef NXDK
     static bool a_is_held = true;
 
     static bool a_was_held = false;
@@ -430,6 +465,7 @@ int main() {
                 
         }
     }
+    #endif
 
     while(user_command != 'q') {
 
