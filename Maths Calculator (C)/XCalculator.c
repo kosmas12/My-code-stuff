@@ -72,37 +72,6 @@ static void Init() {
     SDL_Init(SDL_INIT_JOYSTICK|SDL_INIT_VIDEO); // Initialize SDL
 }
 
-static void checkForMinicalc() {
-    bool start_is_held = true;
-
-    bool start_was_held = true;
-
-    while (true)
-    {
-
-        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START))
-        {
-            start_is_held = true;
-        }
-        else
-        {
-            start_is_held = false;
-        }
-
-        if (isNewlyPressed(start_is_held, &start_was_held))
-        {
-            minicalc(result, user_input);
-            break;
-        }
-        else
-        {
-            break;
-        }
-        
-    } 
-}
-
-
 static MathOperation operations[] = {
   { .command='+', .description="Addition", .use_default_input=true, .handler=addition },
   { .command='*', .description="Multiplication", .use_default_input=true, .handler=multiplication },
@@ -285,48 +254,6 @@ static char getCommand() {
     }
 
     return user_command;
-}
-
-
-static void minicalc(float a, float b) {
-    
-    bool start_is_held = true;
-
-    bool start_was_held = true;
-
-    while (true)
-    {
-        getCommand();
-
-        for (int i = 0; i < ARRAY_SIZE(operations); i++) {
-
-            MathOperation* o = &operations[i]; // Iterate through operations[] using i from the for() loop
-
-            if (o->command == user_command) { // When the command number of the index of i in operations[] equals our user_command
-            
-                if(o->use_default_input == true) { // If it uses the default input handler
-                
-                    getInput();
-                }
-                b = o->handler(a, b); // Calculate our result and store it
-                user_input += b;
-            }
-        }
-
-        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_START))
-        {
-            start_is_held = true;
-        }
-        else
-        {
-            start_is_held = false;
-        }
-
-        if(isNewlyPressed(start_is_held, &start_was_held)){
-
-            break;
-        }
-    }
 }
 
 static float getInput() {
