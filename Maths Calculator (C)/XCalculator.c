@@ -15,7 +15,7 @@
 // function prototypes
 static float help(float a, float b);
 
-static float quit(float a, float b);
+static void quit();
 #ifdef NXDK
 static bool isNewlyPressed(bool is_held, bool *was_held);
 #endif
@@ -139,7 +139,7 @@ static void quit() {
     exit(0); 
 }
 
-static float help(float a, float b) {
+static help(float a, float b) {
 
     #ifdef NXDK
     static bool a_is_held = true; // Create a bool for checking if A is held in this frame
