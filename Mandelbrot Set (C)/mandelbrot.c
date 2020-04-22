@@ -1,6 +1,4 @@
 #if defined (NXDK)
-#include <SDL.h>
-#include <SDL_gamecontroller.h>
 #include <hal/debug.h>
 #include <hal/video.h>
 #include <windows.h>
@@ -11,6 +9,7 @@
 #include "headers/mySDL.h"
 #include "headers/myStructures.h"
 #include "headers/myFractal.h"
+#include <stdbool.h>
 
 // Any other main prototype will bug MinGW's SDL2
 // Doesn't matter on *nix
@@ -21,11 +20,20 @@ int main(int argc, char **argv) {
   Sdl *sdl = init_sdl();
   Fractal *fractal = init_fractal();
 
-  // Init console
-  print_verbose(fractal);
+  for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
 
-  // User can exit program using escape
-  while (is_user_pressing_escape(sdl) == 0) {
+    if(SDL_IsGameController(i)) { // If i (which we use to iterate through the connected controllers) as a port number is a Game Controller
+      controller = SDL_GameControllerOpen(i); // Open the controller
+ 
+      if(controller) { // If we find that we opened a controller
+        break; // Exit the loop
+        }
+                 
+    }
+  }
+
+
+  while (true) {
     draw_mandelbrot(sdl, fractal);
     is_user_moving(sdl, fractal);
 
@@ -33,7 +41,5 @@ int main(int argc, char **argv) {
 
     SDL_Delay(10);
   }
-
-  free_everything(sdl, fractal);
   return 0;
 }

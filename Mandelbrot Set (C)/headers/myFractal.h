@@ -33,7 +33,7 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
   Complex c;
   Complex z;
 
-  // Coordonate of each point
+  // Coordinate of each point
   int x;
   int y;
 
@@ -74,23 +74,6 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
       // be replaced by SDL_RenderDrawPoints()
     }
   }
-}
-
-void print_verbose(Fractal *fractal) {
-  /* // Print some variables on console
-
-  // We need to know the OS
-  // In order to run the right command
-  #ifdef __unix__
-    system("clear");
-  #elif defined(_WIN32) || defined(_WIN64)
-    system("cls");
-  #endif
-
-  printf(" ~ x position :\t%f\n", fractal->xMove);
-  printf(" ~ y position :\t%f\n", fractal->yMove);
-  printf(" ~ zoom :\t%f\n", fractal->zoom);
-  printf(" ~ iterations :\t%f\n", fractal->iMax); */
 }
 
 void is_user_moving(Sdl *sdl, Fractal *fractal) {
