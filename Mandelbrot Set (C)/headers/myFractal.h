@@ -3,8 +3,12 @@
 #ifndef HEADERS_MYFRACTAL_H_
 #define HEADERS_MYFRACTAL_H_
 
+#if defined(NXDK)
+#include <SDL.h>
+#include <SDL_gamecontroller.h>
+#else
 #include <SDL2/SDL.h>
-
+#endif
 #include "myStructures.h"
 #include "mySDL.h"
 
@@ -75,6 +79,22 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
     }
   }
 }
+
+void print_verbose(Fractal *fractal) {
+  /* // Print some variables on console
+  // We need to know the OS
+  // In order to run the right command
+  #ifdef __unix__
+    system("clear");
+  #elif defined(_WIN32) || defined(_WIN64)
+    system("cls");
+  #endif
+  printf(" ~ x position :\t%f\n", fractal->xMove);
+  printf(" ~ y position :\t%f\n", fractal->yMove);
+  printf(" ~ zoom :\t%f\n", fractal->zoom);
+  printf(" ~ iterations :\t%f\n", fractal->iMax); */
+}
+
 
 void is_user_moving(Sdl *sdl, Fractal *fractal) {
   SDL_PollEvent(&sdl->event);

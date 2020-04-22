@@ -2,8 +2,12 @@
 
 #ifndef HEADERS_MYSTRUCTURES_H_
 #define HEADERS_MYSTRUCTURES_H_
-
+#if defined(NXDK)
+#include <SDL.h>
+#include <SDL_gamecontroller.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
 // This has to be a square
 #define WINDOW_HEIGHT 600

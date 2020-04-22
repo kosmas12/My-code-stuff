@@ -1,8 +1,6 @@
 #if defined (NXDK)
 #include <hal/debug.h>
 #include <hal/video.h>
-#include <windows.h>
-#define printf(...) debugPrint(__VA_ARGS__)
 #else
 #include <SDL2/SDL.h>
 #endif
