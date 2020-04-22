@@ -1,8 +1,13 @@
-// This file has no copyright.
-// Contact : http://geographer.fr
-//           geographer@geographer.fr
-
+#if defined (NXDK)
+#include <SDL.h>
+#include <SDL_gamecontroller.h>
+#include <hal/debug.h>
+#include <hal/video.h>
+#include <windows.h>
+#define printf(...) debugPrint(__VA_ARGS__)
+#else
 #include <SDL2/SDL.h>
+#endif
 #include "headers/mySDL.h"
 #include "headers/myStructures.h"
 #include "headers/myFractal.h"
@@ -10,6 +15,7 @@
 // Any other main prototype will bug MinGW's SDL2
 // Doesn't matter on *nix
 int main(int argc, char **argv) {
+  XVideoSetMode(640, 480, 32, REFRESH_60HZ);
   // Init the structures
   Sdl *sdl = init_sdl();
   Fractal *fractal = init_fractal();
