@@ -11,9 +11,9 @@ PC controls:
 
 Xbox controls:
 
-Use **left analog stick** to move
-Use **RT** to zoom in
-Use **LT** to zoom out
+* Use **left analog stick** to move
+* Use **RT** to zoom in
+* Use **LT** to zoom out
 
 ## Requirements
 
