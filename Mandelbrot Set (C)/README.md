@@ -4,9 +4,16 @@ Using the C language and the SDL2 library to draw the Mandelbrot set.
 
 ## Features
 
+PC controls:
 * Use the **arrow keys** to move
 * Use the **+ key** to zoom in
 * Use the **- key** to zoom out
+
+Xbox controls:
+
+Use **left analog stick** to move
+Use **RT** to zoom in
+Use **LT** to zoom out
 
 ## Requirements
 

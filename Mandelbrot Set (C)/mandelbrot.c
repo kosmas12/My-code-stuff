@@ -12,7 +12,7 @@
 // Any other main prototype will bug MinGW's SDL2
 // Doesn't matter on *nix
 int main(int argc, char **argv) {
-  //Initialize Xbox video
+  //Init Xbox video
   XVideoSetMode(640, 480, 32, REFRESH_60HZ);
   // Init the structures
   Sdl *sdl = init_sdl();
