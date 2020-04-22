@@ -1,0 +1,6 @@
+XBE_TITLE=MandelbrotSetX
+GEN_XISO = $(XBE_TITLE).iso
+SRCS = mandelbrot.c
+NXDK_DIR = /home/kosmas/nxdk
+NXDK_SDL = y
+include $(NXDK_DIR)/Makefile

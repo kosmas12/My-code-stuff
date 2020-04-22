@@ -1,1 +1,8 @@
 Forked from https://github.com/Geospace/mandelbrot-c-sdl2/tree/master
+The Xbox port is made by me
+
+To compile for NXDK, use:
+
+make -f Makefile.nxdk 
+
+after changing the NXDK directory in the Makefile to the correct one
