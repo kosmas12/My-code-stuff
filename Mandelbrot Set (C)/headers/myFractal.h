@@ -97,7 +97,6 @@ void print_verbose(Fractal *fractal) {
 
 
 void is_user_moving(Sdl *sdl, Fractal *fractal) {
-  SDL_PollEvent(&sdl->event);
 
   // Delta time to sync everything
   float delta = 0.30;
@@ -106,29 +105,53 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
   float moveStep = 0.5;
   float zoomStep = 3.0;
 
+  bool is_left_analog_left = where_is_xaxis() < -0.5f; // Initialize a boolean to check if Xamount is lesser than -0.5. If so, the left analog is left
+
+  bool is_left_analog_right = where_is_xaxis() > 0.5f; // Initialize a boolean to check if Xamount is greater than 0.5. If so, the left analog is right
+
+  bool was_left_analog_left = false;
+
+  bool was_left_analog_right = false;
+
+  bool is_left_analog_down = -where_is_yaxis() < -0.5f;
+
+  bool is_left_analog_up = -where_is_yaxis() > 0.5f; 
+
+  bool was_left_analog_down = false;
+
+  bool was_left_analog_up = false;
+
+  bool is_left_trigger_down = where_is_tlaxis() < -0.5f; 
+
+  bool is_right_trigger_down = where_is_traxis() < -0.5f;
+
+  bool was_left_trigger_down = false;
+
+  bool was_right_trigger_down = false;
+
   // Everything is adapted to current zoom
-  if (sdl->keys[SDL_SCANCODE_LEFT]) {
+  if (isNewlyPressed(is_left_analog_left, &was_left_analog_left)) {
     fractal->xMove = fractal->xMove + (moveStep / fractal->zoom * delta);
     draw_cross(sdl);
     print_verbose(fractal);
-  } else if (sdl->keys[SDL_SCANCODE_RIGHT]) {
+  } else if (isNewlyPressed(is_left_analog_right, &was_left_analog_right)) {
     fractal->xMove = fractal->xMove - (moveStep / fractal->zoom * delta);
     draw_cross(sdl);
     print_verbose(fractal);
-  } else if (sdl->keys[SDL_SCANCODE_UP]) {
+  } else if (isNewlyPressed(is_left_analog_up, &was_left_analog_up)) {
     fractal->yMove = fractal->yMove + (moveStep / fractal->zoom * delta);
     draw_cross(sdl);
     print_verbose(fractal);
-  } else if (sdl->keys[SDL_SCANCODE_DOWN]) {
+  } else if (isNewlyPressed(is_left_analog_down, &was_left_analog_down)) {
     fractal->yMove = fractal->yMove - (moveStep / fractal->zoom * delta);
     draw_cross(sdl);
     print_verbose(fractal);
-  } else if (sdl->keys[SDL_SCANCODE_KP_PLUS]) {
+  } else if (isNewlyPressed(is_right_trigger_down, &was_right_trigger_down)) {
     fractal->zoom = fractal->zoom + (moveStep * fractal->zoom * delta);
     fractal->iMax = fractal->iMax + zoomStep * delta;
     draw_cross(sdl);
     print_verbose(fractal);
-  } else if (sdl->keys[SDL_SCANCODE_KP_MINUS]
+  } else if (isNewlyPressed(is_left_trigger_down, &was_left_trigger_down)
     // User is not allowed to zoom back past 0.3
     && (fractal->zoom - (moveStep * fractal->zoom * delta)) > 0.3) {
     fractal->zoom = fractal->zoom - (moveStep * fractal->zoom * delta);

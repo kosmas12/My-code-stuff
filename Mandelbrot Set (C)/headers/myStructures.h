@@ -10,8 +10,8 @@
 #endif
 
 // This has to be a square
-#define WINDOW_HEIGHT 600
-#define WINDOW_WIDTH  600
+#define WINDOW_WIDTH 100
+#define WINDOW_HEIGHT 100
 
 #define WINDOW_TITLE "Mandelbrot Fractal, by Geographer (Xbox port by Kosmas12)"
 
@@ -19,7 +19,6 @@ typedef struct Sdl {
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Event event;
-  const Uint8 *keys;
 } Sdl;
 
 typedef struct Complex {
