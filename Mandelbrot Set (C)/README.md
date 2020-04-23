@@ -17,6 +17,7 @@ Xbox controls (for nxdk branch):
 
 ## Requirements
 
+PC:
 * C standard library with (G)CC
 * SDL2 library
 * Possibly MinGW if running Windows
