@@ -21,6 +21,11 @@ Xbox controls (for nxdk branch):
 * SDL2 library
 * Possibly MinGW if running Windows
 
+Xbox:
+* NXDK (https://github.com/XboxDev/nxdk)
+* clang
+* llvm
+
 ## Compilation
 
 ```
