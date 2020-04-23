@@ -193,10 +193,6 @@ static char getCommand() {
 
     static bool a_was_held = true;
 
-    static bool x_is_pushed = true;
-
-    static bool x_was_pushed = true;
-
     int accessnum = 0; // We use an access number to iterate through the operations[] table
 
     while (true) { // Forever
