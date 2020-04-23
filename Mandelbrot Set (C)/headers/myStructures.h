@@ -10,8 +10,8 @@
 #endif
 
 // This has to be a square
-#define WINDOW_WIDTH 100
-#define WINDOW_HEIGHT 100
+#define WINDOW_WIDTH 480
+#define WINDOW_HEIGHT 480
 
 #define WINDOW_TITLE "Mandelbrot Fractal, by Geographer (Xbox port by Kosmas12)"
 
