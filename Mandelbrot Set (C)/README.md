@@ -26,8 +26,6 @@ PC:
 
 Xbox:
 * NXDK (https://github.com/XboxDev/nxdk)
-* clang
-* llvm
 
 ## Compilation
 
