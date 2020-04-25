@@ -4,12 +4,12 @@ Using the C language and the SDL2 library to draw the Mandelbrot set.
 
 ## Features
 
-PC controls:
+PC controls (for master branch):
 * Use the **arrow keys** to move
 * Use the **+ key** to zoom in
 * Use the **- key** to zoom out
 
-Xbox controls:
+Xbox controls (for nxdk branch):
 
 * Use **left analog stick** to move
 * Use **RT** to zoom in
@@ -17,9 +17,15 @@ Xbox controls:
 
 ## Requirements
 
+PC:
 * C standard library with (G)CC
 * SDL2 library
 * Possibly MinGW if running Windows
+
+Xbox:
+* NXDK (https://github.com/XboxDev/nxdk)
+* clang
+* llvm
 
 ## Compilation
 
