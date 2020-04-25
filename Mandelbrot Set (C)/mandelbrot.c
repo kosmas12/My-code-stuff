@@ -50,9 +50,6 @@ int main(int argc, char **argv) {
     }
   }
 
-bool a_is_held = true;
-bool a_was_held = true;
-
 
   while (true) {
     SDL_GameControllerUpdate();

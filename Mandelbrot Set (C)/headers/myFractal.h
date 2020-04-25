@@ -116,11 +116,7 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
   float Yamount = -getAxis(SDL_CONTROLLER_AXIS_LEFTY);
   printf("Yamount: %f\n",Yamount);
 
-  float Tramount = getAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
-  printf("Tramount: %f\n",Tramount);
 
-  float Tlamount = getAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT); 
-  printf("Tlamount: %f\n",Tlamount);
 
   bool is_left_analog_left = Xamount < -0.5f;
 
@@ -138,13 +134,31 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
 
   bool was_left_analog_up = false;
 
-  bool is_left_trigger_down = Tlamount < -0.5f; 
+  bool is_x_down = true;
 
-  bool is_right_trigger_down = Tramount < -0.5f;
+  bool is_b_down = true;
 
-  bool was_left_trigger_down = false;
+  bool was_x_down = false;
 
-  bool was_right_trigger_down = false;
+  bool was_b_down = false;
+
+  if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_X))
+  {
+    is_x_down = true;
+  }
+  else
+  {
+    is_x_down = false;
+  }
+
+  if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B))
+  {
+    is_b_down = true;
+  }
+  else
+  {
+    is_b_down = false;
+  }
 
   // Everything is adapted to current zoom
   if (isNewlyPressed(is_left_analog_left, &was_left_analog_left)) {
@@ -163,12 +177,12 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
     fractal->yMove = fractal->yMove - (moveStep / fractal->zoom * delta);
     draw_cross(sdl);
     print_verbose(fractal);
-  } else if (isNewlyPressed(is_right_trigger_down, &was_right_trigger_down)) {
+  } else if (isNewlyPressed(is_b_down, &was_b_down)) {
     fractal->zoom = fractal->zoom + (moveStep * fractal->zoom * delta);
     fractal->iMax = fractal->iMax + zoomStep * delta;
     draw_cross(sdl);
     print_verbose(fractal);
-  } else if (isNewlyPressed(is_left_trigger_down, &was_left_trigger_down)
+  } else if (isNewlyPressed(is_x_down, &was_x_down)
     // User is not allowed to zoom back past 0.3
     && (fractal->zoom - (moveStep * fractal->zoom * delta)) > 0.3) {
     fractal->zoom = fractal->zoom - (moveStep * fractal->zoom * delta);
