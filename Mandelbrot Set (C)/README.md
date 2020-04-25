@@ -25,7 +25,7 @@ PC:
 * Possibly MinGW if running Windows
 
 Xbox:
-* NXDK (https://github.com/XboxDev/nxdk)
+* nxdk (https://github.com/XboxDev/nxdk)
 
 ## Compilation
 
