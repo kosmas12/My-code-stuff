@@ -20,20 +20,20 @@ int main(int argc, char **argv) {
   Sdl *sdl = init_sdl();
   if (sdl_init == false)
   {
-    printf("Couldn't initialize SDL");
+    fprintf(stderr, "Couldn't initialize SDL");
   }
   else
   {
-    printf("SDL initialized");
+    fprintf(stdout, "SDL initialized");
   }
   Fractal *fractal = init_fractal();
   if (sdl_init == false)
   {
-    printf("Couldn't initialize fractal");
+    fprintf(stderr, "Couldn't initialize fractal");
   }
   else
   {
-    printf("Fractal initialized");
+    fprintf(stdout, "Fractal initialized");
   }
   
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
       controller = SDL_GameControllerOpen(i); // Open the controller
  
       if(controller) { // If we find that we opened a controller
-        printf("Opened controller");
+        fprintf(stdout, "Opened controller");
         break; // Exit the loop
       }
                  

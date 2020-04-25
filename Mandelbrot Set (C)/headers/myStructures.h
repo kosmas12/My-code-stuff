@@ -7,6 +7,7 @@
 #include <SDL_gamecontroller.h>
 #else
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_gamecontroller.h>
 #endif
 
 // This has to be a square
