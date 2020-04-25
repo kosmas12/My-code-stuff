@@ -43,8 +43,9 @@ int main(int argc, char **argv) {
       controller = SDL_GameControllerOpen(i); // Open the controller
  
       if(controller) { // If we find that we opened a controller
+        printf("Opened controller");
         break; // Exit the loop
-        }
+      }
                  
     }
   }
