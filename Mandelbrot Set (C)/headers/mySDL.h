@@ -63,6 +63,9 @@ static float getAxis(int sdl_axis) { // Function to get an axis from the control
 
 
 Sdl *init_sdl() {
+  
+  SDL_Init(SDL_INIT_GAMECONTROLLER);
+
   Sdl *sdl = malloc(sizeof(Sdl));
 
   sdl->window = SDL_CreateWindow(
@@ -80,45 +83,6 @@ Sdl *init_sdl() {
   return sdl;
 }
 
-static float where_is_xaxis() {
-
-  while (true) {
-    SDL_GameControllerUpdate();
-
-    float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
-    return Xamount;
-  }
-}
-
-static float where_is_yaxis() {
-
-  while (true) {
-    SDL_GameControllerUpdate();
-
-    float Yamount = getAxis(SDL_CONTROLLER_AXIS_LEFTY); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
-    return Yamount;
-  }
-}
-
-static float where_is_traxis() {
-
-  while (true) {
-    SDL_GameControllerUpdate();
-
-    float Tramount = getAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
-    return Tramount;
-  }
-}
-
-static float where_is_tlaxis() {
-
-  while (true) {
-    SDL_GameControllerUpdate();
-
-    float Tlamount = getAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
-    return Tlamount;
-  }
-}
 
 void draw_cross(Sdl *sdl) {
   // Draw a little cross when user zooms in/out or moves

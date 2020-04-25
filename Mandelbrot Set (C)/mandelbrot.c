@@ -20,20 +20,20 @@ int main(int argc, char **argv) {
   Sdl *sdl = init_sdl();
   if (sdl_init == false)
   {
-    fprintf(stderr, "Couldn't initialize SDL");
+    fprintf(stderr, "Couldn't initialize SDL\n");
   }
   else
   {
-    fprintf(stdout, "SDL initialized");
+    fprintf(stdout, "SDL initialized\n");
   }
   Fractal *fractal = init_fractal();
   if (sdl_init == false)
   {
-    fprintf(stderr, "Couldn't initialize fractal");
+    fprintf(stderr, "Couldn't initialize fractal\n");
   }
   else
   {
-    fprintf(stdout, "Fractal initialized");
+    fprintf(stdout, "Fractal initialized\n");
   }
   
 
@@ -43,15 +43,19 @@ int main(int argc, char **argv) {
       controller = SDL_GameControllerOpen(i); // Open the controller
  
       if(controller) { // If we find that we opened a controller
-        fprintf(stdout, "Opened controller");
+        fprintf(stdout, "Opened controller\n");
         break; // Exit the loop
       }
                  
     }
   }
 
+bool a_is_held = true;
+bool a_was_held = true;
+
 
   while (true) {
+    SDL_GameControllerUpdate();
     draw_mandelbrot(sdl, fractal);
     is_user_moving(sdl, fractal);
 

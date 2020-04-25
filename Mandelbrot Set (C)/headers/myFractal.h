@@ -110,25 +110,37 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
   float moveStep = 0.5;
   float zoomStep = 3.0;
 
-  bool is_left_analog_left = where_is_xaxis() < -0.5f; // Initialize a boolean to check if Xamount is lesser than -0.5. If so, the left analog is left
+  float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
+  printf("Xamount: %f\n",Xamount);
 
-  bool is_left_analog_right = where_is_xaxis() > 0.5f; // Initialize a boolean to check if Xamount is greater than 0.5. If so, the left analog is right
+  float Yamount = -getAxis(SDL_CONTROLLER_AXIS_LEFTY);
+  printf("Yamount: %f\n",Yamount);
+
+  float Tramount = getAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+  printf("Tramount: %f\n",Tramount);
+
+  float Tlamount = getAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT); 
+  printf("Tlamount: %f\n",Tlamount);
+
+  bool is_left_analog_left = Xamount < -0.5f;
+
+  bool is_left_analog_right = Xamount > 0.5f;
 
   bool was_left_analog_left = false;
 
   bool was_left_analog_right = false;
 
-  bool is_left_analog_down = -where_is_yaxis() < -0.5f;
+  bool is_left_analog_down = Yamount < -0.5f;
 
-  bool is_left_analog_up = -where_is_yaxis() > 0.5f; 
+  bool is_left_analog_up = Yamount > 0.5f; 
 
   bool was_left_analog_down = false;
 
   bool was_left_analog_up = false;
 
-  bool is_left_trigger_down = where_is_tlaxis() < -0.5f; 
+  bool is_left_trigger_down = Tlamount < -0.5f; 
 
-  bool is_right_trigger_down = where_is_traxis() < -0.5f;
+  bool is_right_trigger_down = Tramount < -0.5f;
 
   bool was_left_trigger_down = false;
 
