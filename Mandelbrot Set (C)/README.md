@@ -23,9 +23,7 @@ PC:
 * Possibly MinGW if running Windows
 
 Xbox:
-* NXDK (https://github.com/XboxDev/nxdk)
-* clang
-* llvm
+* nxdk (https://github.com/XboxDev/nxdk)
 
 ## Compilation
 
