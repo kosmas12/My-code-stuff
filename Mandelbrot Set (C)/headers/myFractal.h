@@ -12,6 +12,8 @@
 #include "myStructures.h"
 #include "mySDL.h"
 
+bool fractal_init = false;
+
 Fractal *init_fractal() {
   Fractal *fractal = malloc(sizeof(Fractal));
 
@@ -22,6 +24,8 @@ Fractal *init_fractal() {
   // Used to change the zoom and precision
   fractal->zoom = 0.3;
   fractal->iMax = 60;
+
+  fractal_init = true;
 
   return fractal;
 } 

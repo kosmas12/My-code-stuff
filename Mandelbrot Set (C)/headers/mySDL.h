@@ -11,7 +11,7 @@
 #endif
 #include <stdbool.h>
 
-#include "myStructures.h"
+bool sdl_init = false;
 
 SDL_GameController *controller = NULL; // We initialize a controller and give it a NULL value for now
 
@@ -73,6 +73,8 @@ Sdl *init_sdl() {
       SDL_WINDOW_SHOWN);
 
   sdl->renderer = SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_SOFTWARE);
+
+ sdl_init = true;
 
   return sdl;
 }
