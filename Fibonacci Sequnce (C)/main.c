@@ -6,7 +6,7 @@ int main()
     int n2 = 1;
 
     int nn = n1 + n2;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 22; i++)
     {
         printf("%d\n", nn);
         n1 = nn;
