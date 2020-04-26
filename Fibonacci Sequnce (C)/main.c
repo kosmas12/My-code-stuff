@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 int main()
 {
     int n1 = 0;
@@ -12,7 +14,6 @@ int main()
         printf("%d\n", nn);
         n2 = nn;
         nn = n1 + n2;
-        printf("%d\n", nn);
     }
     
 }
