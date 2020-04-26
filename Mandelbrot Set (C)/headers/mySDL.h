@@ -61,10 +61,10 @@ static float getAxis(int sdl_axis) { // Function to get an axis from the control
   return amount;
 }
 
-
 Sdl *init_sdl() {
   
-  SDL_Init(SDL_INIT_GAMECONTROLLER);
+  SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO);
+  SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
 
   Sdl *sdl = malloc(sizeof(Sdl));
 
@@ -76,7 +76,10 @@ Sdl *init_sdl() {
       WINDOW_WIDTH,
       SDL_WINDOW_SHOWN);
 
-  sdl->renderer = SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_SOFTWARE);
+  SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 
+    SDL_WINDOW_SHOWN, &sdl->window, &sdl->renderer);
+
+  sdl->surface = SDL_GetWindowSurface(sdl->window);
 
  sdl_init = true;
 
@@ -84,6 +87,7 @@ Sdl *init_sdl() {
 }
 
 
+/*
 void draw_cross(Sdl *sdl) {
   // Draw a little cross when user zooms in/out or moves
   int length = 15;
@@ -93,6 +97,6 @@ void draw_cross(Sdl *sdl) {
     WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2 + length / 2, WINDOW_HEIGHT / 2);
   SDL_RenderDrawLine(sdl->renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT
     / 2 - length / 2, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + length / 2);
-}
+} */
 
 #endif  // HEADERS_MYSDL_H_

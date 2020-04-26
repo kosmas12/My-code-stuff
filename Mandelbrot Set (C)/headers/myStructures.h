@@ -19,6 +19,7 @@
 typedef struct Sdl {
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SDL_Surface *surface;
   SDL_Event event;
 } Sdl;
 

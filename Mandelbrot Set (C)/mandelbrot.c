@@ -52,15 +52,14 @@ int main(int argc, char **argv) {
 
 
   while (true) {
-    SDL_GameControllerUpdate();
     draw_mandelbrot(sdl, fractal);
     is_user_moving(sdl, fractal);
 
     SDL_RenderPresent(sdl->renderer);
 
-    #ifndef NXDK
+    //#ifndef NXDK
     SDL_Delay(10);
-    #endif
+    //#endif
   }
   return 0;
 }
