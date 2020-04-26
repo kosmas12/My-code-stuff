@@ -2,16 +2,16 @@
 
 int main()
 {
-    int n1 = 0;
-    int n2 = 1;
+    __uint64_t n1 = 0;
+    __uint64_t n2 = 1;
 
-    int nn = n1 + n2;
-    for (int i = 0; i < 22; i++)
+    __uint64_t nn = n1 + n2;
+    for (int i = 0; i < 50; i++)
     {
-        printf("%d\n", nn);
+        printf("%ld\n", nn);
         n1 = nn;
         nn = n1 + n2;
-        printf("%d\n", nn);
+        printf("%ld\n", nn);
         n2 = nn;
         nn = n1 + n2;
     }
