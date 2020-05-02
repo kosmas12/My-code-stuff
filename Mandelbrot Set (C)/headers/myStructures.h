@@ -18,7 +18,6 @@
 
 typedef struct Sdl {
   SDL_Window *window;
-  SDL_Renderer *renderer;
   SDL_Surface *surface;
 } Sdl;
 
@@ -38,7 +37,7 @@ typedef struct Fractal {
 } Fractal;
 
 void free_everything(Sdl *sdl, Fractal *fractal) {
-  SDL_DestroyRenderer(sdl->renderer);
+
   SDL_DestroyWindow(sdl->window);
   free(sdl);
 

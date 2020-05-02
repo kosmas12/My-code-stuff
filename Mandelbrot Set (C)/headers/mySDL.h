@@ -67,11 +67,9 @@ Sdl *init_sdl() {
 
   SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO);
 
-  SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, &sdl->window, &sdl->renderer);
+  sdl->window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 
   sdl->surface = SDL_GetWindowSurface(sdl->window);
-
-  SDL_GetError();
 
   assert(sdl->surface != NULL);
 

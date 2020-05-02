@@ -63,8 +63,6 @@ int main(int argc, char **argv) {
     draw_mandelbrot(sdl, fractal);
     is_user_moving(sdl, fractal);
 
-    SDL_RenderPresent(sdl->renderer);
-
   }
   return 0;
 }
