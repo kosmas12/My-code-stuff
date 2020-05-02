@@ -62,7 +62,6 @@ int main(int argc, char **argv) {
   while (true) {
     draw_mandelbrot(sdl, fractal);
     is_user_moving(sdl, fractal);
-
   }
   return 0;
 }

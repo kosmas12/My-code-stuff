@@ -52,17 +52,17 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
   int y;
 
   // Calculate all the y for every x
-  for (x = 0; x < xFrame; x++) {
-    c.r = ((x - xFrame / 2) / (0.5 * xFrame * fractal->zoom)) - fractal->xMove;
+  for (y = 0; y < yFrame; y++) {
+    c.i = ((y - yFrame / 2) / (0.5 * yFrame * fractal->zoom)) - fractal->yMove;
 
-    for (y = 0; y < yFrame; y++) {
-      c.i = ((y - yFrame / 2) /
-        (0.5 * yFrame * fractal->zoom)) - fractal->yMove;
+    for (x = 0; x < xFrame; x++) {
+      c.r = ((x - xFrame / 2) / (0.5 * xFrame * fractal->zoom)) - fractal->xMove;
 
       z.r = 0;
       z.i = 0;
 
       i = 0;
+
 
       // Iterate in order to know if a certain point is in the set or not
       do {
