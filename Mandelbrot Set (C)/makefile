@@ -3,7 +3,7 @@ MAKEFLAGS += --ignore-errors
 
 all:
 	@echo "Let's make this !"
-	gcc -o mandelbrot mandelbrot.c -lSDL2
+	gcc -o mandelbrot mandelbrot.c -lSDL2 -g -Og
 	@echo "If no errors appeared, just ./mandelbrot ! Enjoy mandelbrot ! ;-)"
 
 clean:

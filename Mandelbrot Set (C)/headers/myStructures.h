@@ -20,7 +20,6 @@ typedef struct Sdl {
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Surface *surface;
-  SDL_Event event;
 } Sdl;
 
 typedef struct Complex {
@@ -35,7 +34,7 @@ typedef struct Fractal {
   double xMove;
   double yMove;
   double zoom;
-  float iMax;
+  unsigned int iMax;
 } Fractal;
 
 void free_everything(Sdl *sdl, Fractal *fractal) {

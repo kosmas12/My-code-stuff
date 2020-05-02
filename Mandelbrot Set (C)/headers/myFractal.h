@@ -36,7 +36,7 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
 
   SDL_LockSurface(sdl->surface);
 
-  uint32_t *pixels = sdl->surface->pixels;
+  uint8_t *pixels = sdl->surface->pixels;
   SDL_PixelFormat *pixelFormat = sdl->surface->format;
 
   int xFrame = WINDOW_WIDTH;
@@ -85,21 +85,7 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
       // be replaced by SDL_RenderDrawPoints()
     }
   }
-}
-
-void print_verbose(Fractal *fractal) {
-  /* // Print some variables on console
-  // We need to know the OS
-  // In order to run the right command
-  #ifdef __unix__
-    system("clear");
-  #elif defined(_WIN32) || defined(_WIN64)
-    system("cls");
-  #endif
-  printf(" ~ x position :\t%f\n", fractal->xMove);
-  printf(" ~ y position :\t%f\n", fractal->yMove);
-  printf(" ~ zoom :\t%f\n", fractal->zoom);
-  printf(" ~ iterations :\t%f\n", fractal->iMax); */
+  SDL_UnlockSurface(sdl->surface);
 }
 
 
@@ -112,36 +98,68 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
   float moveStep = 0.5;
   float zoomStep = 3.0;
 
-  // Everything is adapted to current zoom
-  while (SDL_PollEvent(&sdl->event)) {
-    if (sdl->event.type == SDL_CONTROLLERBUTTONDOWN) {
-      switch (sdl->event.cbutton.button) {
-        case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-          fractal->xMove = fractal->xMove + (moveStep / fractal->zoom * delta);
-          break;
-        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-          fractal->xMove = fractal->xMove - (moveStep / fractal->zoom * delta);
-          break;
-        case SDL_CONTROLLER_BUTTON_DPAD_UP:
-          fractal->yMove = fractal->yMove + (moveStep / fractal->zoom * delta);
-          break;
-        case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-          fractal->yMove = fractal->yMove - (moveStep / fractal->zoom * delta);
-          break;
-        case SDL_CONTROLLER_BUTTON_B:
-          fractal->zoom = fractal->zoom + (moveStep * fractal->zoom * delta);
-          fractal->iMax = fractal->iMax + zoomStep * delta;
-          break;
-        case SDL_CONTROLLER_BUTTON_X:
-          fractal->zoom = fractal->zoom - (moveStep * fractal->zoom * delta);
-          fractal->iMax = fractal->iMax - zoomStep * delta;
-          break; 
+  float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
 
-        default:
-          break;
-        }
-      }
-    }
+  float Yamount = -getAxis(SDL_CONTROLLER_AXIS_LEFTY);
+
+  bool is_left_analog_left = Xamount < -0.5f;
+
+  bool is_left_analog_right = Xamount > 0.5f;
+
+  bool was_left_analog_left = false;
+
+  bool was_left_analog_right = false;
+
+  bool is_left_analog_down = Yamount < -0.5f;
+
+  bool is_left_analog_up = Yamount > 0.5f; 
+
+  bool was_left_analog_down = false;
+
+  bool was_left_analog_up = false;
+
+  bool is_x_down = true;
+
+  bool is_b_down = true;
+
+  bool was_x_down = false;
+
+  bool was_b_down = false;
+
+  if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_X))
+  {
+    is_x_down = true;
+  }
+  else
+  {
+    is_x_down = false;
+  }
+
+  if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B))
+  {
+    is_b_down = true;
+  }
+  else
+  {
+    is_b_down = false;
+  }
+
+  // Everything is adapted to current zoom
+  if (isNewlyPressed(is_left_analog_left, &was_left_analog_left)) {
+    fractal->xMove = fractal->xMove + (moveStep / fractal->zoom * delta);
+  } else if (isNewlyPressed(is_left_analog_right, &was_left_analog_right)) {
+    fractal->xMove = fractal->xMove - (moveStep / fractal->zoom * delta);
+  } else if (isNewlyPressed(is_left_analog_up, &was_left_analog_up)) {
+    fractal->yMove = fractal->yMove + (moveStep / fractal->zoom * delta);
+  } else if (isNewlyPressed(is_left_analog_down, &was_left_analog_down)) {
+    fractal->yMove = fractal->yMove - (moveStep / fractal->zoom * delta);;
+  } else if (isNewlyPressed(is_b_down, &was_b_down)) {
+    fractal->zoom = fractal->zoom + (moveStep * fractal->zoom * delta);
+    fractal->iMax = fractal->iMax + zoomStep * delta;
+  } else if (isNewlyPressed(is_x_down, &was_x_down) && (fractal->zoom - (moveStep * fractal->zoom * delta)) > 0.3) {
+    fractal->zoom = fractal->zoom - (moveStep * fractal->zoom * delta);
+    fractal->iMax = fractal->iMax - zoomStep * delta;
+  }
 } 
 
 #endif  // HEADERS_MYFRACTAL_H_

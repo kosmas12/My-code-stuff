@@ -4,6 +4,7 @@
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>
+#include <assert.h>
 #endif
 #include "headers/myStructures.h"
 #include "headers/mySDL.h"
@@ -12,12 +13,19 @@
 // Any other main prototype will bug MinGW's SDL2
 // Doesn't matter on *nix
 int main(int argc, char **argv) {
+
+  float delta = 0.30;
+
+  float moveStep = 0.5;
+  float zoomStep = 3.0;
+
   #ifdef NXDK
   //Init Xbox video
   XVideoSetMode(640, 480, 32, REFRESH_60HZ);
   #endif
   // Init the structures
   Sdl *sdl = init_sdl();
+
   if (sdl_init == false)
   {
     fprintf(stderr, "Couldn't initialize SDL\n");
@@ -57,9 +65,6 @@ int main(int argc, char **argv) {
 
     SDL_RenderPresent(sdl->renderer);
 
-    //#ifndef NXDK
-    SDL_Delay(10);
-    //#endif
   }
   return 0;
 }

@@ -63,25 +63,19 @@ static float getAxis(int sdl_axis) { // Function to get an axis from the control
 
 Sdl *init_sdl() {
   
-  SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO);
-  SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
-
   Sdl *sdl = malloc(sizeof(Sdl));
 
-  sdl->window = SDL_CreateWindow(
-      WINDOW_TITLE,
-      SDL_WINDOWPOS_UNDEFINED,
-      SDL_WINDOWPOS_UNDEFINED,
-      WINDOW_HEIGHT,
-      WINDOW_WIDTH,
-      SDL_WINDOW_SHOWN);
+  SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO);
 
-  SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 
-    SDL_WINDOW_SHOWN, &sdl->window, &sdl->renderer);
+  SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, &sdl->window, &sdl->renderer);
 
   sdl->surface = SDL_GetWindowSurface(sdl->window);
 
- sdl_init = true;
+  SDL_GetError();
+
+  assert(sdl->surface != NULL);
+
+  sdl_init = true;
 
   return sdl;
 }
