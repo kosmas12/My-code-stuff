@@ -42,8 +42,6 @@ float remap(float value, float from_min, float from_max, float to_min, float to_
 
 static float getAxis(int sdl_axis) { // Function to get an axis from the controller
 
-  SDL_GameControllerUpdate();
-  
   const float deadzone = 0.2f;
 
   // Get input in range -1 to +1
