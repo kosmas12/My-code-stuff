@@ -5,4 +5,4 @@ To compile for nxdk, use:
 
 make -f Makefile.nxdk 
 
-after changing the NXDK directory in the Makefile to the correct one
+after changing the nxdk directory in the Makefile to the correct one
