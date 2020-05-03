@@ -1,5 +1,7 @@
 # mandelbrot-c-sdl2
 
+Forked from https://github.com/Geospace/mandelbrot-c-sdl2/tree/master
+
 Using the C language and the SDL2 library to draw the Mandelbrot set.
 
 ## Features
