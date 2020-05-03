@@ -37,6 +37,6 @@ Windows users, you can use MinGW with this project.
 
 Then run the program and enjoy ! :-)
 
-![screenshot](screenshot.png "This is beautiful...")
+![screenshot](screenshotx.png "This is beautiful...")
 
 Happy fractal !
