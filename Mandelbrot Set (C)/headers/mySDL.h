@@ -71,8 +71,10 @@ Sdl *init_sdl() {
 
   sdl->surface = SDL_GetWindowSurface(sdl->window);
 
+  #if !defined(NXDK)
   assert(sdl->surface != NULL);
-
+  #endif
+  
   sdl_init = true;
 
   return sdl;

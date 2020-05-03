@@ -60,8 +60,8 @@ int main(int argc, char **argv) {
 
 
   while (true) {
-    SDL_GameControllerUpdate();
     draw_mandelbrot(sdl, fractal);
+    SDL_GameControllerUpdate();
     is_user_moving(sdl, fractal);
   }
   return 0;
