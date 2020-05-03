@@ -2,6 +2,8 @@
 
 Forked from https://github.com/Geospace/mandelbrot-c-sdl2/tree/master
 
+The Xbox port is made by me
+
 Using the C language and the SDL2 library to draw the Mandelbrot set.
 
 ## Features
@@ -26,6 +28,10 @@ PC:
 
 Xbox:
 * nxdk (https://github.com/XboxDev/nxdk)
+
+To compile for nxdk, use:
+
+make -f Makefile.nxdk 
 
 ## Compilation
 
