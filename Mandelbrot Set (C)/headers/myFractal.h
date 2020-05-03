@@ -85,8 +85,8 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
       // be replaced by SDL_RenderDrawPoints()
     }
   }
-  SDL_UpdateWindowSurface(sdl->window);
   SDL_UnlockSurface(sdl->surface);
+  SDL_UpdateWindowSurface(sdl->window);
 }
 
 
