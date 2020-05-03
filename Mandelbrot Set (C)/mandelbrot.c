@@ -60,6 +60,7 @@ int main(int argc, char **argv) {
 
 
   while (true) {
+    SDL_GameControllerUpdate();
     draw_mandelbrot(sdl, fractal);
     is_user_moving(sdl, fractal);
   }

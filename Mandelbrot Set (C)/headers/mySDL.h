@@ -18,20 +18,20 @@ SDL_GameController *controller = NULL; // We initialize a controller and give it
 
 static bool isNewlyPressed(bool is_held, bool *was_held) {
 
-    if (is_held) { // If the button is held in this frame
-        if (*was_held) { // If it was held in the previous frame
-            return false; // The button isn't newly pressed
-        } 
-        else { // If it wasn't held in the previous frame
-            *was_held = true; // Set was_held to true because the current frame will be the previous frame in the next frame
-            return true; // The button is newly pressed, so we return true
-        } 
-        
+  if (is_held) { // If the button is held in this frame
+    if (*was_held) { // If it was held in the previous frame
+      return false; // The button isn't newly pressed
     } 
-    else { // If it isn't held in the current frame
-        *was_held = false; // Set was_held to false
-        return false; // The button isn't pressed at all, so we return false
-    }
+    else { // If it wasn't held in the previous frame
+      *was_held = true; // Set was_held to true because the current frame will be the previous frame in the next frame
+      return true; // The button is newly pressed, so we return true
+    } 
+        
+  } 
+  else { // If it isn't held in the current frame
+    *was_held = false; // Set was_held to false
+    return false; // The button isn't pressed at all, so we return false
+  }
 }
 
 
@@ -42,6 +42,8 @@ float remap(float value, float from_min, float from_max, float to_min, float to_
 
 static float getAxis(int sdl_axis) { // Function to get an axis from the controller
 
+  SDL_GameControllerUpdate();
+  
   const float deadzone = 0.2f;
 
   // Get input in range -1 to +1

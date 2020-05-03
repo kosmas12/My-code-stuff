@@ -36,7 +36,7 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
 
   SDL_LockSurface(sdl->surface);
 
-  uint8_t *pixels = sdl->surface->pixels;
+  uint32_t *pixels = sdl->surface->pixels;
   SDL_PixelFormat *pixelFormat = sdl->surface->format;
 
   int xFrame = WINDOW_WIDTH;
@@ -85,6 +85,7 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
       // be replaced by SDL_RenderDrawPoints()
     }
   }
+  SDL_UpdateWindowSurface(sdl->window);
   SDL_UnlockSurface(sdl->surface);
 }
 
@@ -100,8 +101,8 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
 
   float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
 
-  float Yamount = -getAxis(SDL_CONTROLLER_AXIS_LEFTY);
-
+  float Yamount = -getAxis(SDL_CONTROLLER_AXIS_LEFTY); // Yamount is -getAxis() because of inverted Y axis in SDL
+  
   bool is_left_analog_left = Xamount < -0.5f;
 
   bool is_left_analog_right = Xamount > 0.5f;
