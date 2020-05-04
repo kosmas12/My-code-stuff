@@ -11,6 +11,7 @@
 #include <SDL2/SDL_gamecontroller.h>
 #endif
 #include <stdbool.h>
+#include <assert.h>
 
 bool sdl_init = false;
 
