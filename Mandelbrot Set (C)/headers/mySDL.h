@@ -79,7 +79,6 @@ Sdl *init_sdl() {
   return sdl;
 }
 
-
 /*
 void draw_cross(Sdl *sdl) {
   // Draw a little cross when user zooms in/out or moves

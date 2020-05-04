@@ -125,7 +125,21 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
         default:
           break;
       }
-    } 
+    }
   }
 }
+
+bool is_user_exiting (Sdl *sdl)
+{
+  if(sdl->event.type == SDL_QUIT)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+  
+}
+
 #endif  // HEADERS_MYFRACTAL_H_

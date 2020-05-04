@@ -5,7 +5,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>
 #endif
-#include <assert.h>
 #include "headers/myStructures.h"
 #include "headers/mySDL.h"
 #include "headers/myFractal.h"
@@ -25,6 +24,7 @@ int main(int argc, char **argv) {
   //Init Xbox video
   XVideoSetMode(640, 480, 32, REFRESH_60HZ);
   #endif
+
   // Init the structures
   Sdl *sdl = init_sdl();
 
@@ -63,13 +63,16 @@ int main(int argc, char **argv) {
   {
     fprintf(stderr, "Couldn't open a joystick.\n");
   }
-  
-
 
   while (true) {
-    draw_mandelbrot(sdl, fractal);
     is_user_moving(sdl, fractal);
     draw_mandelbrot(sdl, fractal);
+    if (is_user_exiting(sdl))
+    {
+      break;
+    }
+    
   }
+  free_everything(sdl, fractal);
   return 0;
 }
