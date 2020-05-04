@@ -5,10 +5,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>
 #endif
+#include <assert.h>
 #include "headers/myStructures.h"
 #include "headers/mySDL.h"
 #include "headers/myFractal.h"
-#include <assert.h>
 
 // Any other main prototype will bug MinGW's SDL2
 // Doesn't matter on *nix
