@@ -87,7 +87,6 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
   }
   SDL_UnlockSurface(sdl->surface);
   SDL_UpdateWindowSurface(sdl->window);
-  printf("Left drawing state\n");
 }
 
 
