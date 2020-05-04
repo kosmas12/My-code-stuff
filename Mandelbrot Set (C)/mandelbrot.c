@@ -14,6 +14,8 @@
 // Doesn't matter on *nix
 int main(int argc, char **argv) {
 
+  bool joy_open = false;
+
   float delta = 0.30;
 
   float moveStep = 0.5;
@@ -44,28 +46,22 @@ int main(int argc, char **argv) {
     fprintf(stdout, "Fractal initialized\n");
   }
   
-  if (SDL_NumJoysticks() > 0)
-  {
-    for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
+  for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
 
-      if(SDL_IsGameController(i)) { // If i (which we use to iterate through the connected controllers) as a port number is a Game Controller
-        controller = SDL_GameControllerOpen(i); // Open the controller
- 
-        if(controller) { // If we find that we opened a controller
-          fprintf(stdout, "Opened %s in port %d\n", SDL_GameControllerName(controller), i);
-          break; // Exit the loop
+    if(SDL_IsGameController(i)) { // If i (which we use to iterate through the connected controllers) as a port number is a Game Controller
+      controller = SDL_GameControllerOpen(i); // Open the controller
+
+      if(controller) { // If we find that we opened a controller
+        fprintf(stdout, "Opened %s in port %d\n", SDL_GameControllerName(controller), i);
+        joy_open = true;
+        break; // Exit the loop
         }
       }
-      else
-      {
-        fprintf(stderr, "Couldn't open a joystick\n");
-      } 
-
-    }
   }
-  else
+
+  if (!joy_open)
   {
-    fprintf(stderr, "Couldn't find a joystick\n");
+    fprintf(stderr, "Couldn't open a joystick.\n");
   }
   
 
