@@ -4,11 +4,11 @@
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>
-#include <assert.h>
 #endif
 #include "headers/myStructures.h"
 #include "headers/mySDL.h"
 #include "headers/myFractal.h"
+#include <assert.h>
 
 // Any other main prototype will bug MinGW's SDL2
 // Doesn't matter on *nix
@@ -68,8 +68,8 @@ int main(int argc, char **argv) {
 
   while (true) {
     draw_mandelbrot(sdl, fractal);
-    SDL_GameControllerUpdate();
     is_user_moving(sdl, fractal);
+    draw_mandelbrot(sdl, fractal);
   }
   return 0;
 }

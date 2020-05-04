@@ -20,6 +20,7 @@ typedef struct Sdl {
   SDL_Window *window;
   SDL_Surface *surface;
   SDL_PixelFormat *format;
+  SDL_Event event;
 } Sdl;
 
 typedef struct Complex {
