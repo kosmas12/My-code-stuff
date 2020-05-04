@@ -87,6 +87,7 @@ void draw_mandelbrot(Sdl *sdl, Fractal *fractal) {
   }
   SDL_UnlockSurface(sdl->surface);
   SDL_UpdateWindowSurface(sdl->window);
+  printf("Left drawing state\n");
 }
 
 
@@ -153,7 +154,7 @@ void is_user_moving(Sdl *sdl, Fractal *fractal) {
   } else if (isNewlyPressed(is_left_analog_up, &was_left_analog_up)) {
     fractal->yMove = fractal->yMove + (moveStep / fractal->zoom * delta);
   } else if (isNewlyPressed(is_left_analog_down, &was_left_analog_down)) {
-    fractal->yMove = fractal->yMove - (moveStep / fractal->zoom * delta);;
+    fractal->yMove = fractal->yMove - (moveStep / fractal->zoom * delta);
   } else if (isNewlyPressed(is_b_down, &was_b_down)) {
     fractal->zoom = fractal->zoom + (moveStep * fractal->zoom * delta);
     fractal->iMax = fractal->iMax + zoomStep * delta;
