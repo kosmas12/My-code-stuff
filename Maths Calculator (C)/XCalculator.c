@@ -208,17 +208,38 @@ static char getCommand() {
 
         float Xamount = getAxis(SDL_CONTROLLER_AXIS_LEFTX); // Xamount is the amount returned by getAxis for the X axis of the left analog stick
 
-        bool is_left_analog_left = Xamount < -0.5f; // Initialize a boolean to check if Xamount is lesser than -0.5. If so, the left analog is left
+        bool is_dpad_left = true; // Initialize a boolean to check if Xamount is lesser than -0.5. If so, the left analog is left
 
-        bool is_left_analog_right = Xamount > 0.5f; // Initialize a boolean to check if Xamount is greater than 0.5. If so, the left analog is right
+        bool is_dpad_right = true; // Initialize a boolean to check if Xamount is greater than 0.5. If so, the left analog is right
 
-        bool was_left_analog_left = false;
+        bool was_dpad_left = false;
 
-        bool was_left_analog_right = false;
+        bool was_dpad_right = false;
+
+        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT))
+        {
+            is_dpad_left = true;
+        }
+        else
+        {
+            is_dpad_left = false;
+        }
+        
+        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT))
+        {
+            is_dpad_right = true;
+        }
+        else
+        {
+            is_dpad_right = false;
+        }
+        
+        
+        
 
         // Code to prevent the access number from going out of bounds from operations[]
         if(accessnum > 0) { // If accessnum is bigger than 0
-            if(isNewlyPressed(is_left_analog_left, &was_left_analog_left)) { accessnum--; } // If the left analog is left reduce the accessnum
+            if(isNewlyPressed(is_dpad_left, &was_dpad_left)) { accessnum--; } // If the left analog is left reduce the accessnum
         } 
         else {
             accessnum = 0; // If it is smaller than 0, set it to 0
@@ -226,7 +247,7 @@ static char getCommand() {
         
         // ARRAY_SIZE(operations) returns all of the elements, but since it also counts index 0 we want accessnum to see if accessnum is lesser than the size - 1
         if(accessnum < ARRAY_SIZE(operations) - 1) {
-            if(isNewlyPressed(is_left_analog_right, &was_left_analog_right)) { accessnum++; } // If the left analog is right increase the accessnum
+            if(isNewlyPressed(is_dpad_right, &was_dpad_right)) { accessnum++; } // If the left analog is right increase the accessnum
         }
         else {
             accessnum = ARRAY_SIZE(operations) - 1; // If accessnum is bigger than the size - 1 then set it to size - 1
