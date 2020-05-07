@@ -28,21 +28,19 @@ int main(int argc, char **argv) {
   // Init the structures
   Sdl *sdl = init_sdl();
 
-  if (sdl_init == false)
-  {
+  if (sdl_init == false) {
     fprintf(stderr, "Couldn't initialize SDL\n");
   }
-  else
-  {
+  else {
     fprintf(stdout, "SDL initialized\n");
   }
+
   Fractal *fractal = init_fractal();
-  if (sdl_init == false)
-  {
+
+  if (sdl_init == false) {
     fprintf(stderr, "Couldn't initialize fractal\n");
   }
-  else
-  {
+  else {
     fprintf(stdout, "Fractal initialized\n");
   }
   
@@ -59,16 +57,14 @@ int main(int argc, char **argv) {
       }
   }
 
-  if (!joy_open)
-  {
+  if (!joy_open) {
     fprintf(stderr, "Couldn't open a joystick.\n");
   }
 
   while (true) {
     is_user_moving(sdl, fractal);
     draw_mandelbrot(sdl, fractal);
-    if (is_user_exiting(sdl))
-    {
+    if (is_user_exiting(sdl)) {
       break;
     }
     

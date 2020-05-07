@@ -16,6 +16,7 @@
 bool fractal_init = false;
 
 Fractal *init_fractal() {
+  
   Fractal *fractal = malloc(sizeof(Fractal));
 
   // Used to move camera
