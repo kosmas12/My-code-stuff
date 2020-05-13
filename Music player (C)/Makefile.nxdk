@@ -1,0 +1,7 @@
+XBE_TITLE=MusicPlayerX
+GEN_XISO = $(XBE_TITLE).iso
+SRCS = mandelbrot.c
+NXDK_DIR = /home/$(USERNAME)/nxdk
+NXDK_SDL = y
+include $(NXDK_DIR)/Makefile
+DEBUG = y
