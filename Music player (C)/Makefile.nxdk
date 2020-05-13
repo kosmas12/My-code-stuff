@@ -1,7 +1,13 @@
-XBE_TITLE=MusicPlayerX
+XBE_TITLE = MusicPlayerX
 GEN_XISO = $(XBE_TITLE).iso
-SRCS = mandelbrot.c
-NXDK_DIR = /home/$(USERNAME)/nxdk
+SRCS += player.c
+NXDK_DIR = /home/$(USERNAME)/nxdk/
 NXDK_SDL = y
+
+all_local: cp_sound all
+
 include $(NXDK_DIR)/Makefile
-DEBUG = y
+
+cp_sound:
+	@mkdir -p $(OUTPUT_DIR)
+	cp songname $(OUTPUT_DIR)/
