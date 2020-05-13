@@ -1,6 +1,6 @@
 #if defined (NXDK)
-#include <hal/debug.h>
 #include <hal/video.h>
+#include <windows.h>
 #include <SDL.h>
 #include <SDL_audio.h>
 #else
@@ -12,14 +12,18 @@
 int main()
 {
 
-    SDL_Init(SDL_INIT_AUDIO);
+    #if defined (NXDK)
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+    #endif
+
+    SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO);
 
     // declare the needed variables
     SDL_AudioSpec wavSpec;
     Uint32 wavLength;
     Uint8 *wavBuffer;
 
-    SDL_LoadWAV("(.wav file goes here)", &wavSpec, &wavBuffer, &wavLength); // FIXME: Support user selected file
+    SDL_LoadWAV("D:\\CivilSin.wav", &wavSpec, &wavBuffer, &wavLength); // FIXME: Support user selected file
 
     SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
 
