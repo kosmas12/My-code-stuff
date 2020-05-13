@@ -23,7 +23,7 @@ int main()
     Uint32 wavLength;
     Uint8 *wavBuffer;
 
-    SDL_LoadWAV("D:\\CivilSin.wav", &wavSpec, &wavBuffer, &wavLength); // FIXME: Support user selected file
+    SDL_LoadWAV("songname", &wavSpec, &wavBuffer, &wavLength); // FIXME: Support user selected file
 
     SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
 
