@@ -5,6 +5,7 @@
 #include <hal/debug.h>
 #include <SDL.h>
 #include <SDL_audio.h>
+#define printf(...) debugPrint(__VA_ARGS__)
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>
@@ -33,21 +34,20 @@ int main()
     Uint32 wavLength;
     Uint8 *wavBuffer;
     SDL_GameController *controller;
-    
+    int controllerport = 0;
+    char* controllername = NULL;
+
     for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
 
         if(SDL_IsGameController(i)) { // If i (which we use to iterate through the connected controllers) as a port number is a Game Controller
             controller = SDL_GameControllerOpen(i); // Open the controller
 
             if(controller) { // If we find that we opened a controller
-                printf("Opened controller %s on port %d\n", SDL_GameControllerName(controller), i);
+                controllerport = i;
+                controllername = SDL_GameControllerName(controller);
                 break; // Exit the loop
             }
                 
-        }
-        else
-        {
-            printf("Couldn't open a controller on port%d\n", i);
         }
     }
     
@@ -56,9 +56,21 @@ int main()
     SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
 
     int play = SDL_QueueAudio(deviceID, wavBuffer, wavLength); //Might compare to something for a feature in the future
-    
+
+    printf("Opened controller: %s on port %d\n", controllername, controllerport);
+    printf("Now playing: %s\n", fileToPlay);
+
     while (1)
     {   
+        #if defined (NXDK)
+        XVideoWaitForVBlank();
+
+        debugClearScreen();
+
+        printf("Opened controller: %s on port %d\n", controllername, controllerport);
+        printf("Now playing: %s\n", fileToPlay);
+        #endif
+
         SDL_Event event;
 
         while (SDL_PollEvent(&event))
