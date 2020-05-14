@@ -20,7 +20,6 @@ void Quit(SDL_AudioDeviceID deviceID, Uint8 *wavBuffer) {
 
 int main()
 {
-    char* fileToPlay = "nxdk.wav";
 
     #if defined (NXDK)
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
@@ -30,6 +29,7 @@ int main()
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
 
     // declare the needed variables
+    char* fileToPlay = "nxdk.wav";
     SDL_AudioSpec wavSpec;
     Uint32 wavLength;
     Uint8 *wavBuffer;
