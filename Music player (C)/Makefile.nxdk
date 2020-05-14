@@ -10,4 +10,4 @@ include $(NXDK_DIR)/Makefile
 
 cp_sound:
 	@mkdir -p $(OUTPUT_DIR)
-	cp songname $(OUTPUT_DIR)/
+	cp nxdk.wav $(OUTPUT_DIR)/
