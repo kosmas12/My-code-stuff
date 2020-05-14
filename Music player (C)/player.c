@@ -29,7 +29,7 @@ int main()
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
 
     // declare the needed variables
-    char* fileToPlay = "nxdk.wav";
+    char* fileToPlay = "ToBeContinued.wav";
     SDL_AudioSpec wavSpec;
     Uint32 wavLength;
     Uint8 *wavBuffer;

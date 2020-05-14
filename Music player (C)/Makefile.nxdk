@@ -1,4 +1,4 @@
-XBE_TITLE = MusicPlayerX
+XBE_TITLE = XMusic
 GEN_XISO = $(XBE_TITLE).iso
 SRCS += player.c
 NXDK_DIR = /home/$(USERNAME)/nxdk/
@@ -10,4 +10,5 @@ include $(NXDK_DIR)/Makefile
 
 cp_sound:
 	@mkdir -p $(OUTPUT_DIR)
-	cp nxdk.wav $(OUTPUT_DIR)/
+	cp nxdk.wav $(OUTPUT_DIR)
+	cp ToBeContinued.wav $(OUTPUT_DIR)
