@@ -22,7 +22,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 		return;
 	
 	len = ( len > audio_length ? audio_length : len );
-	SDL_memcpy (stream, audio_position, len); 					// simply copy from one buffer into the other
+	SDL_memcpy (stream, audio_position, len); // simply copy from one buffer into the other
 	
 	audio_position += len;
 	audio_length -= len;
@@ -66,7 +66,7 @@ int main()
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
 
   // declare the needed variables
-  char* fileToPlay = "pausetest.wav";
+  char* fileToPlay = "CivilSin.wav";
   SDL_AudioSpec wavSpec;
   Uint32 wavLength;
   Uint8 *wavBuffer;
@@ -97,8 +97,6 @@ int main()
 	audio_length = wavLength;
 
   SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
-
-  int play = SDL_QueueAudio(deviceID, wavBuffer, wavLength); //Might compare to something for a feature in the future
 
   #if !defined (NXDK)
   printf("Opened controller: %s on port %d\n", controllername, controllerport);
