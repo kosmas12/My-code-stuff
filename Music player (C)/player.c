@@ -11,6 +11,7 @@
 #include <SDL2/SDL_audio.h>
 #endif
 #include <stdio.h>
+#include <stdbool.h>
 
 void Quit(SDL_AudioDeviceID deviceID, Uint8 *wavBuffer) {
     SDL_CloseAudioDevice(deviceID);
@@ -18,8 +19,29 @@ void Quit(SDL_AudioDeviceID deviceID, Uint8 *wavBuffer) {
 	SDL_Quit();
 }
 
+static bool isNewlyPressed(bool is_held, bool *was_held) {
+
+  if (is_held) { // If the button is held in this frame
+    if (*was_held) { // If it was held in the previous frame
+      return false; // The button isn't newly pressed
+    } 
+    else { // If it wasn't held in the previous frame
+      *was_held = true; // Set was_held to true because the current frame will be the previous frame in the next frame
+      return true; // The button is newly pressed, so we return true
+    } 
+        
+  } 
+  else { // If it isn't held in the current frame
+    *was_held = false; // Set was_held to false
+    return true; // The button isn't pressed at all, so we return false
+  }
+}
+
 int main()
 {
+
+    bool a_is_held = true;
+    bool a_was_held = true;
 
     #if defined (NXDK)
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
@@ -74,14 +96,13 @@ int main()
 
         SDL_Event event;
 
-        #if !defined (NXDK)
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT)
             {
                 Quit(deviceID, wavBuffer);
             }
         }
-        #endif
+        
 
         if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
             SDL_PauseAudioDevice(deviceID, 1);
