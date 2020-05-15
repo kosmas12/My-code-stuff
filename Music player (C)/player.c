@@ -29,7 +29,7 @@ int main()
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
 
     // declare the needed variables
-    char* fileToPlay = "nxdk.wav";
+    char* fileToPlay = "pausetest.wav";
     SDL_AudioSpec wavSpec;
     Uint32 wavLength;
     Uint8 *wavBuffer;
@@ -51,17 +51,18 @@ int main()
         }
     }
     
-    SDL_LoadWAV(fileToPlay, &wavSpec, &wavBuffer, &wavLength); // FIXME: Ask for file at runtime
+    SDL_LoadWAV(fileToPlay, &wavSpec, &wavBuffer, &wavLength);//FIXME: Ask for file at runtime
 
     SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
 
     int play = SDL_QueueAudio(deviceID, wavBuffer, wavLength); //Might compare to something for a feature in the future
 
+    #if !defined (NXDK)
     printf("Opened controller: %s on port %d\n", controllername, controllerport);
     printf("Now playing: %s\n", fileToPlay);
+    #endif
 
-    while (1)
-    {   
+    while (1) {   
         #if defined (NXDK)
         XVideoWaitForVBlank();
 
@@ -73,20 +74,19 @@ int main()
 
         SDL_Event event;
 
-        while (SDL_PollEvent(&event))
-        {
+        #if !defined (NXDK)
+        while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT)
             {
                 Quit(deviceID, wavBuffer);
             }
         }
+        #endif
 
-        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
-        {
+        if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
             SDL_PauseAudioDevice(deviceID, 1);
         }
-        else
-        {
+        else {
             SDL_PauseAudioDevice(deviceID, 0); //SDL_PauseAudioDevice with 0 in place of pause_on means unpaused, thus playing
         }
         //FIXME: Make it run for duration of song
