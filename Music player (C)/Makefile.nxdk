@@ -11,4 +11,3 @@ include $(NXDK_DIR)/Makefile
 cp_sound:
 	@mkdir -p $(OUTPUT_DIR)
 	cp nxdk.wav $(OUTPUT_DIR)
-	cp ToBeContinued.wav $(OUTPUT_DIR)
