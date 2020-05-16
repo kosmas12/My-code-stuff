@@ -10,3 +10,7 @@ Requirements to compile on PC:
 Requirements to compile on Xbox:
 
     nxdk
+
+Notes for changing file:
+    When changing for PC, use just the file name and its path, only the file name if on the same directory as the program.
+    When changing for Xbox, always use the full path
