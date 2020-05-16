@@ -128,8 +128,9 @@ int main()
       else {
         SDL_PauseAudioDevice(deviceID, 0); //SDL_PauseAudioDevice with 0 in place of pause_on means unpaused, thus playing
       }
-      //FIXME: Make it run for duration of song
+      
   }
 
+  Quit(deviceID, wavBuffer);
   return 0;
 }
