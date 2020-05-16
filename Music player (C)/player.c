@@ -66,7 +66,7 @@ int main()
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
 
   // declare the needed variables
-  char* fileToPlay = "CivilSin.wav";
+  char* fileToPlay = "pausetest.wav";
   SDL_AudioSpec wavSpec;
   Uint32 wavLength;
   Uint8 *wavBuffer;
