@@ -88,13 +88,13 @@ static int FileBrowser() {
 
     do {
       if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        currentFileDirCount++;
         printf("Directory: ");
       } 
       else {
+        currentFileDirCount++;
         printf("File: ");
       }
-
-      currentFileDirCount++;
       printf("%s\n", findFileData.cFileName);
     } 
     while (FindNextFile(hFind, &findFileData) != 0);
@@ -104,10 +104,10 @@ static int FileBrowser() {
 
     DWORD error = GetLastError();
     if (error == ERROR_NO_MORE_FILES) {
-      printf("Done! Total number of files and directories: %d\n", currentFileDirCount);
+      printf("Total number of files and directories: %d\n", currentFileDirCount);
     } 
     else {
-      printf("error: %x\n", error);
+      printf("Error: %x\n", error);
     }
       if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
       {
