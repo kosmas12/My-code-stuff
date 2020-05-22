@@ -14,11 +14,12 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-static Uint8 *audio_position; 
-static Uint32 audio_length;
-Uint8 *wavBuffer;
+static Uint8 *audio_position = NULL; 
+static Uint32 audio_length = NULL;
+Uint8 *wavBuffer = NULL;
 char* fileToPlay = "CivilSin.wav";
-SDL_AudioDeviceID deviceID;
+SDL_AudioDeviceID deviceID = NULL;
+SDL_GameController *controller = NULL;
 
 void audio_callback(void *userdata, Uint8 *stream, int len) {
 	
@@ -63,9 +64,67 @@ static void Init() {
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
 }
 
+
+static int FileBrowser() {
+
+  #if defined (NXDK)
+  char *totalDirsFiles[5] = { NULL };
+  size_t currentFileDirCount = 0;
+  WIN32_FIND_DATA findFileData;
+  HANDLE hFind;
+
+  while (true)
+  {
+    XVideoWaitForVBlank();
+    SDL_GameControllerUpdate();
+    debugClearScreen();
+
+    printf("Supported files on D:\n");
+    hFind = FindFirstFile("D:\\*.wav", &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+    printf("FindFirstHandle() failed!\n");
+    return 1;
+    }
+
+    do {
+      if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        printf("Directory: ");
+      } 
+      else {
+        printf("File: ");
+      }
+
+      currentFileDirCount++;
+      printf("%s\n", findFileData.cFileName);
+    } 
+    while (FindNextFile(hFind, &findFileData) != 0);
+
+    realloc(totalDirsFiles, currentFileDirCount);
+    printf("\n");
+
+    DWORD error = GetLastError();
+    if (error == ERROR_NO_MORE_FILES) {
+      printf("Done! Total number of files and directories: %d\n", currentFileDirCount);
+    } 
+    else {
+      printf("error: %x\n", error);
+    }
+      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+      {
+        FindClose(hFind);
+        break;
+      }
+  }
+  #endif
+
+  return 0;
+}
+
 int main()
 {
-  SDL_GameController *controller;
+  Init();
+
+  //Open controller
   int controllerport = 0;
   char* controllername = NULL;
 
@@ -82,6 +141,17 @@ int main()
                 
     }
   }
+
+  #if defined (NXDK)
+  if (FileBrowser() == 1)
+  {
+    while (true)
+    {
+      printf("Error! Halting execution!");
+    }
+    return 1;
+  }
+  #endif
 
   PlayFile();
 
