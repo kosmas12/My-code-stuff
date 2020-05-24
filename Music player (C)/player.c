@@ -15,10 +15,10 @@
 #include <stdbool.h>
 
 static Uint8 *audio_position = NULL; 
-static Uint32 audio_length = NULL;
+static Uint32 audio_length = 0;
 Uint8 *wavBuffer = NULL;
-char* fileToPlay = "CivilSin.wav";
-SDL_AudioDeviceID deviceID = NULL;
+char fileToPlay[140];
+SDL_AudioDeviceID deviceID = 0;
 SDL_GameController *controller = NULL;
 
 void audio_callback(void *userdata, Uint8 *stream, int len) {
@@ -26,8 +26,8 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 	if (audio_length ==0)
 		return;
 	
-	len = ( len > audio_length ? audio_length : len );
-	SDL_memcpy (stream, audio_position, len); // simply copy from one buffer into the other
+	len = (len > audio_length ? audio_length : len);
+	SDL_memcpy(stream, audio_position, len); // simply copy from one buffer into the other
 	
 	audio_position += len;
 	audio_length -= len;
@@ -38,6 +38,50 @@ static void Quit(SDL_AudioDeviceID deviceID, Uint8 *wavBuffer) {
 	SDL_FreeWAV(wavBuffer);
 	SDL_Quit();
 } 
+
+static bool isNewlyPressed(bool is_held, bool *was_held) {
+
+    if (is_held) { // If the button is held in this frame
+        if (*was_held) { // If it was held in the previous frame
+            return false; // The button isn't newly pressed
+        } 
+        else { // If it wasn't held in the previous frame
+            *was_held = true; // Set was_held to true because the current frame will be the previous frame in the next frame
+            return true; // The button is newly pressed, so we return true
+        } 
+        
+    } 
+    else { // If it isn't held in the current frame
+        *was_held = false; // Set was_held to false
+        return false; // The button isn't pressed at all, so we return false
+    }
+}
+
+float remap(float value, float from_min, float from_max, float to_min, float to_max) { // Function to remap values to other values
+  value = ((value - from_min) / (from_max - from_min)) * (to_max - to_min) + to_min;
+  return value;
+}
+
+static float getAxis(int sdl_axis) { // Function to get an axis from the controller
+
+  const float deadzone = 0.2f;
+
+  // Get input in range -1 to +1
+  float amount = (float)SDL_GameControllerGetAxis(controller, sdl_axis) / (float)0x8000;
+
+  // Reject if the stick is in deadzone
+  if (fabsf(amount) < deadzone) {
+    return 0.0f;
+  }
+
+  if (amount > 0.0f) {
+  amount = remap(amount,  deadzone, +1.0f,  0.0f, +1.0f); // Remap from +[0.2, 1.0] to +[0.0, 1.0]
+  } 
+  else {
+  amount = -remap(-amount,  deadzone, +1.0f,  0.0f, +1.0f); // Remap from -[0.2, 1.0] to -[0.0, 1.0]
+  }
+  return amount;
+}
 
 static void PlayFile() {
 
@@ -64,12 +108,8 @@ static void Init() {
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
 }
 
-
+#if defined (NXDK)
 static int FileBrowser() {
-
-  #if defined (NXDK)
-  char *totalDirsFiles[5] = { NULL };
-  size_t currentFileDirCount = 0;
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
 
@@ -79,6 +119,7 @@ static int FileBrowser() {
     SDL_GameControllerUpdate();
     debugClearScreen();
 
+    size_t currentFileDirCount = 0;
     printf("Supported files on D:\n");
     hFind = FindFirstFile("D:\\*.wav", &findFileData);
     if (hFind == INVALID_HANDLE_VALUE) {
@@ -99,7 +140,13 @@ static int FileBrowser() {
     } 
     while (FindNextFile(hFind, &findFileData) != 0);
 
-    realloc(totalDirsFiles, currentFileDirCount);
+    int totalDirsFiles[currentFileDirCount];
+    for (int i = 0; i < currentFileDirCount; i++)
+    {
+      totalDirsFiles[i] = i;
+    }
+    
+
     printf("\n");
 
     DWORD error = GetLastError();
@@ -109,16 +156,16 @@ static int FileBrowser() {
     else {
       printf("Error: %x\n", error);
     }
-      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
-      {
-        FindClose(hFind);
-        break;
-      }
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
+    {
+      FindClose(hFind);
+      break;
+    }
   }
-  #endif
 
   return 0;
 }
+#endif
 
 int main()
 {
@@ -151,6 +198,10 @@ int main()
     }
     return 1;
   }
+  #else
+  printf("Tell me the path to the file that you want to play: ");
+  
+  scanf("%s", fileToPlay);
   #endif
 
   PlayFile();
