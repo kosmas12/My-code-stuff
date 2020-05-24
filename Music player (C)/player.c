@@ -121,7 +121,7 @@ static int FileBrowser() {
 
     size_t currentFileDirCount = 0;
     printf("Supported files on D:\n");
-    hFind = FindFirstFile("D:\\*.wav", &findFileData);
+    hFind = FindFirstFile("D:\\*.wav", &findFileData); //FIXME: Make it so that it doesn't read from HDD every frame
     if (hFind == INVALID_HANDLE_VALUE) {
     printf("FindFirstHandle() failed!\n");
     return 1;
