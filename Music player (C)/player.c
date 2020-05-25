@@ -1,4 +1,5 @@
 #if defined (NXDK)
+#include <string.h>
 #include <hal/video.h>
 #include <windows.h>
 #include <hal/xbox.h>
@@ -109,43 +110,50 @@ static void Init() {
 }
 
 #if defined (NXDK)
+typedef struct
+{
+  int fileIndex;
+  char fileName[50];
+}file;
+
+
 static int FileBrowser() {
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
+
+  file foundFiles[50];
+  int currentIndex = 0;
+
+  size_t currentFileDirCount = 0;
+
+  hFind = FindFirstFileA("D:\\*.wav", &findFileData);
+
+  do {
+    XVideoWaitForVBlank();
+    debugClearScreen();
+    if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+      printf("Directory: ");
+    } 
+    else {
+      printf("File: ");
+    }
+    foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
+    strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
+    currentFileDirCount++;
+  } 
+  while (FindNextFileA(hFind, &findFileData) != 0);
 
   while (true)
   {
     XVideoWaitForVBlank();
     SDL_GameControllerUpdate();
     debugClearScreen();
-
-    size_t currentFileDirCount = 0;
-    printf("Supported files on D:\n");
-    hFind = FindFirstFile("D:\\*.wav", &findFileData); //FIXME: Make it so that it doesn't read from HDD every frame
-    if (hFind == INVALID_HANDLE_VALUE) {
-    printf("FindFirstHandle() failed!\n");
-    return 1;
-    }
-
-    do {
-      if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-        currentFileDirCount++;
-        printf("Directory: ");
-      } 
-      else {
-        currentFileDirCount++;
-        printf("File: ");
-      }
-      printf("%s\n", findFileData.cFileName);
-    } 
-    while (FindNextFile(hFind, &findFileData) != 0);
-
-    int totalDirsFiles[currentFileDirCount];
+    
     for (int i = 0; i < currentFileDirCount; i++)
     {
-      totalDirsFiles[i] = i;
+      printf("%d ", foundFiles[i].fileIndex);
+      printf("%s\n",foundFiles[i].fileName);
     }
-    
 
     printf("\n");
 
