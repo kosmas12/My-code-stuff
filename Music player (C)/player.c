@@ -5,7 +5,6 @@
 #include <hal/xbox.h>
 #include <hal/debug.h>
 #include <SDL.h>
-#include <SDL_audio.h>
 #include <nxdk/mount.h>
 #define printf(...) debugPrint(__VA_ARGS__)
 #else
@@ -24,7 +23,7 @@ SDL_GameController *controller = NULL;
 
 void audio_callback(void *userdata, Uint8 *stream, int len) {
 	
-	if (audio_length ==0)
+	if (audio_length == 0)
 		return;
 	
 	len = (len > audio_length ? audio_length : len);
