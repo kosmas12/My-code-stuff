@@ -155,17 +155,34 @@ static int FileBrowser() {
       printf("%s\n",foundFiles[i].fileName);
     }
 
-    printf("\n");
-
     DWORD error = GetLastError();
     if (error == ERROR_NO_MORE_FILES) {
-      printf("Total number of files and directories: %d\n", currentFileDirCount);
+      printf("\nTotal number of files and directories: %d\n", currentFileDirCount);
     } 
     else {
       printf("Error: %x\n", error);
     }
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A))
-    {
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
+      if (currentIndex != 0) {
+        currentIndex--;
+      } 
+      else {
+        currentIndex = 0;
+      }
+    }
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+      if (currentIndex != currentFileDirCount - 1) {
+        currentIndex++;
+      } 
+      else {
+        currentIndex = currentFileDirCount - 1;
+      }
+    }
+    
+
+    printf("\nYour current selected file is: %s (Index number %d)\n", foundFiles[currentIndex].fileName, currentIndex);
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
+      strcpy(fileToPlay, foundFiles[currentIndex].fileName);
       FindClose(hFind);
       break;
     }
@@ -248,5 +265,6 @@ int main()
   }
 
   Quit(deviceID, wavBuffer);
+  XReboot();
   return 0;
 }
