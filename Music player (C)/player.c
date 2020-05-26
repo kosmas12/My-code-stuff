@@ -226,7 +226,7 @@ int main()
   #else
   printf("Tell me the path to the file that you want to play: ");
   
-  scanf("%s", fileToPlay);
+  scanf("%[^\t\n]", fileToPlay);
   #endif
 
   PlayFile();
@@ -265,6 +265,8 @@ int main()
   }
 
   Quit(deviceID, wavBuffer);
+  #if defined(NXDK)
   XReboot();
+  #endif
   return 0;
 }
