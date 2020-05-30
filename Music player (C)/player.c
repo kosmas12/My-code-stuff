@@ -5,22 +5,27 @@
 #include <hal/xbox.h>
 #include <hal/debug.h>
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <nxdk/mount.h>
 #define printf(...) debugPrint(__VA_ARGS__)
 #else
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_mixer.h>
 #endif
 #include <stdio.h>
 #include <stdbool.h>
 
-static Uint8 *audio_position = NULL; 
-static Uint32 audio_length = 0;
-Uint8 *wavBuffer = NULL;
+//static Uint8 *audio_position = NULL; 
+//static Uint32 audio_length = 0;
+//Uint8 *wavBuffer = NULL;
+Mix_Music *music = NULL;
+
+
 char fileToPlay[140];
 SDL_AudioDeviceID deviceID = 0;
 SDL_GameController *controller = NULL;
 
+/*
 void audio_callback(void *userdata, Uint8 *stream, int len) {
 	
 	if (audio_length == 0)
@@ -31,11 +36,12 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 	
 	audio_position += len;
 	audio_length -= len;
-}
+} */
 
-static void Quit(SDL_AudioDeviceID deviceID, Uint8 *wavBuffer) {
-  SDL_CloseAudioDevice(deviceID);
-	SDL_FreeWAV(wavBuffer);
+static void Quit(Mix_Music *music) {
+  Mix_FreeMusic(music);
+  Mix_CloseAudio();
+	//SDL_FreeWAV(wavBuffer);
 	SDL_Quit();
 } 
 
@@ -85,8 +91,9 @@ static float getAxis(int sdl_axis) { // Function to get an axis from the control
 
 static void PlayFile() {
 
-  Uint32 wavLength;
-  SDL_AudioSpec wavSpec;
+  /*
+  //Uint32 wavLength;
+  //SDL_AudioSpec wavSpec;
 
   SDL_LoadWAV(fileToPlay, &wavSpec, &wavBuffer, &wavLength);//FIXME: Ask for file at runtime
   wavSpec.callback = audio_callback;
@@ -94,8 +101,13 @@ static void PlayFile() {
 
   audio_position = wavBuffer;
 	audio_length = wavLength;
+  */
 
-  deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
+  Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096);
+  music = Mix_LoadMUS(fileToPlay);
+  Mix_PlayMusic(music, -1);
+
+  //deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
 }
 
 static void Init() {
@@ -125,7 +137,7 @@ static int FileBrowser() {
 
   size_t currentFileDirCount = 0;
 
-  hFind = FindFirstFileA("D:\\*.wav", &findFileData);
+  hFind = FindFirstFileA("D:\\*.*", &findFileData);
 
   do {
     XVideoWaitForVBlank();
@@ -235,7 +247,7 @@ int main()
   printf("Now playing: %s\n", fileToPlay);
   #endif
 
-  while (audio_length > 0) {   
+  while (true) {   
     #if defined (NXDK)
     XVideoWaitForVBlank();
 
@@ -250,20 +262,29 @@ int main()
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT)
       {
-        Quit(deviceID, wavBuffer);
+        Quit(music);
       }
     }
-        
+    
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-      SDL_PauseAudioDevice(deviceID, 1);
+      //SDL_PauseAudioDevice(deviceID, 1);
+      Mix_PauseMusic();
     }
-    else {
-      SDL_PauseAudioDevice(deviceID, 0); //SDL_PauseAudioDevice with 0 in place of pause_on means unpaused, thus playing
+    
+    else
+    {
+      //SDL_PauseAudioDevice(deviceID, 0); //0 means unpaused
+      Mix_ResumeMusic();
     }
-      
+
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B))
+    {
+      break;
+    }
+    
   }
 
-  Quit(deviceID, wavBuffer);
+  Quit(music);
   #if defined(NXDK)
   XReboot();
   #endif
