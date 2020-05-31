@@ -9,7 +9,7 @@ Requirements to compile on PC:
 
 Requirements to compile on Xbox:
 
-    nxdk
+    A version of nxdk with SDL_mixer (https://github.com/JayFoxRox/nxdk/tree/sdl_mixer)
 
 Notes for changing file:
     When changing for PC, use just the file name and its path, only the file name if on the same directory as the program.
