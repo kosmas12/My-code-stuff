@@ -41,6 +41,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 static void Quit(Mix_Music *music) {
   Mix_FreeMusic(music);
   Mix_CloseAudio();
+  Mix_Quit();
 	//SDL_FreeWAV(wavBuffer);
 	SDL_Quit();
 } 
