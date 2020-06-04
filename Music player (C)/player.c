@@ -337,7 +337,6 @@ int main()
     {
       break;
     }
-    SDL_Delay(100);
     
   }
 
