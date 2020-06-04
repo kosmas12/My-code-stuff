@@ -18,7 +18,8 @@
 //static Uint8 *audio_position = NULL; 
 //static Uint32 audio_length = 0;
 //Uint8 *wavBuffer = NULL;
-Mix_Music *music = NULL;
+static int audio_open = 0;
+static Mix_Music *music = NULL;
 
 
 char fileToPlay[140];
@@ -38,12 +39,13 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 	audio_length -= len;
 } */
 
-static void Quit(Mix_Music *music) {
+static void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
   Mix_CloseAudio();
   Mix_Quit();
 	//SDL_FreeWAV(wavBuffer);
 	SDL_Quit();
+  exit(exitcode);
 } 
 
 static bool isNewlyPressed(bool is_held, bool *was_held) {
@@ -102,13 +104,65 @@ static void PlayFile() {
 
   audio_position = wavBuffer;
 	audio_length = wavLength;
+    //deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
   */
 
-  Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 4096);
-  music = Mix_LoadMUS(fileToPlay);
-  Mix_PlayMusic(music, -1);
+  #if defined(NXDK)
+    int audio_rate = 48000; //48KHz saves CPU time
+    Uint16 audio_format = AUDIO_S16LSB;
+    int audio_channels = 2;
+#else
+    int audio_rate = MIX_DEFAULT_FREQUENCY;
+    Uint16 audio_format = MIX_DEFAULT_FORMAT;
+    int audio_channels = MIX_DEFAULT_CHANNELS;
+#endif
+    int audio_buffers = 4096;
+    int audio_volume = MIX_MAX_VOLUME;
+    int looping = 1;
 
-  //deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
+    if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
+      printf("Couldn't open audio: %s\n", SDL_GetError());
+    } 
+    else {
+      Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
+      printf("Opened audio at %d Hz %d bit%s %s %d bytes audio buffer\n", audio_rate,
+      (audio_format&0xFF), (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : ""),
+      (audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo" : "mono",
+      audio_buffers);
+    }
+    audio_open = 1;
+
+    printf("Setting volume\n");
+    Mix_VolumeMusic(audio_volume);
+    printf("Opening %s\n", fileToPlay);
+
+#if 1
+    SDL_RWops *rw = SDL_RWFromFile(fileToPlay, "rb");
+#else
+    FILE* f = fopen(songs[i], "rb");
+    fseek(f, 0, SEEK_END);
+    size_t size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char* buff = malloc(size);
+    fread(buff, 1, size, f);
+    fclose(f);
+    SDL_RWops *rw = SDL_RWFromMem(buff, size);
+#endif
+
+    if (rw == NULL) {
+        printf("Couldn't open %s: %s\n",
+        fileToPlay, Mix_GetError());
+        Quit(music, 2);
+    }
+    printf("Loading %s\n", fileToPlay);
+    music = Mix_LoadMUS_RW(rw, SDL_TRUE);
+    if (music == NULL) {
+        printf("Couldn't load %s: %s\n",
+        fileToPlay, Mix_GetError());
+        Quit(music, 3);
+    }
+    printf("Loaded %s\n", fileToPlay);
+    Mix_FadeInMusic(music, looping, 2000);
 }
 
 static void Init() {
@@ -119,6 +173,7 @@ static void Init() {
   #endif
 
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
+  Mix_Init(MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OGG|MIX_INIT_OPUS);
 }
 
 #if defined (NXDK)
@@ -248,7 +303,7 @@ int main()
   printf("Now playing: %s\n", fileToPlay);
   #endif
 
-  while (true) {   
+  while (Mix_PlayingMusic() == 1) {   
     #if defined (NXDK)
     XVideoWaitForVBlank();
 
@@ -263,7 +318,7 @@ int main()
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT)
       {
-        Quit(music);
+        Quit(music, 0);
       }
     }
     
@@ -282,10 +337,11 @@ int main()
     {
       break;
     }
+    SDL_Delay(100);
     
   }
 
-  Quit(music);
+  Quit(music, 0);
   #if defined(NXDK)
   XReboot();
   #endif
