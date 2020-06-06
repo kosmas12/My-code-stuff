@@ -2,6 +2,7 @@
 #include <string.h>
 #include <hal/video.h>
 #include <windows.h>
+#include <fileapi.h>
 #include <hal/xbox.h>
 #include <hal/debug.h>
 #include <SDL.h>
@@ -22,7 +23,7 @@ static int audio_open = 0;
 static Mix_Music *music = NULL;
 
 
-char fileToPlay[140];
+char fileToPlay[210];
 SDL_AudioDeviceID deviceID = 0;
 SDL_GameController *controller = NULL;
 
@@ -106,7 +107,7 @@ static void PlayFile() {
 	audio_length = wavLength;
     //deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
   */
-
+ 
   #if defined(NXDK)
     int audio_rate = 48000; //48KHz saves CPU time
     Uint16 audio_format = AUDIO_S16LSB;
@@ -115,7 +116,7 @@ static void PlayFile() {
     int audio_rate = MIX_DEFAULT_FREQUENCY;
     Uint16 audio_format = MIX_DEFAULT_FORMAT;
     int audio_channels = MIX_DEFAULT_CHANNELS;
-#endif
+#endif 
     int audio_buffers = 4096;
     int audio_volume = MIX_MAX_VOLUME;
     int looping = 1;
@@ -181,12 +182,14 @@ typedef struct
 {
   int fileIndex;
   char fileName[50];
+  char filePath[150];
 }file;
 
 
 static int FileBrowser() {
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
+  char* driveLetter = "D:";
 
   file foundFiles[50];
   int currentIndex = 0;
@@ -206,9 +209,11 @@ static int FileBrowser() {
     }
     foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
     strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
+    sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveLetter, foundFiles[currentFileDirCount].filePath);
     currentFileDirCount++;
   } 
   while (FindNextFileA(hFind, &findFileData) != 0);
+  FindClose(hFind);
 
   while (true)
   {
@@ -249,8 +254,7 @@ static int FileBrowser() {
 
     printf("\nYour current selected file is: %s (Index number %d)\n", foundFiles[currentIndex].fileName, currentIndex);
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-      strcpy(fileToPlay, foundFiles[currentIndex].fileName);
-      FindClose(hFind);
+      strcpy(fileToPlay, foundFiles[currentFileDirCount].filePath);
       break;
     }
   }
