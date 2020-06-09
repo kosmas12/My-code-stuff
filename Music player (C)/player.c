@@ -163,7 +163,7 @@ static void PlayFile() {
         Quit(music, 3);
     }
     printf("Loaded %s\n", fileToPlay);
-    Mix_FadeInMusic(music, looping, 2000);
+    Mix_PlayMusic(music, looping);
 }
 
 static void Init() {
@@ -173,8 +173,14 @@ static void Init() {
   debugClearScreen();
   #endif
 
+  int flags=MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
+  int initted=Mix_Init(flags);
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
-  Mix_Init(MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OGG|MIX_INIT_OPUS);
+
+  printf("Return value of Mix_Init(): %d\n", initted);
+  SDL_Delay(2000);
+
+
 }
 
 #if defined (NXDK)
@@ -209,7 +215,7 @@ static int FileBrowser() {
     }
     foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
     strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
-    sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveLetter, foundFiles[currentFileDirCount].filePath);
+    sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveLetter, foundFiles[currentFileDirCount].fileName);
     currentFileDirCount++;
   } 
   while (FindNextFileA(hFind, &findFileData) != 0);
