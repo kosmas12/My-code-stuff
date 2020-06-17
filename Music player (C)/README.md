@@ -4,8 +4,8 @@ It is very simple at its current state, but it can do basic things. More specifi
 
 Requirements to compile on PC:
 
-    SDL2 library
-    GCC or clang, MinGW on Windows
+    Libraries: SDL2 library (including SDL2_mixer library)
+    Compiler: GCC or clang, MinGW on Windows
 
 Requirements to compile on Xbox:
 
