@@ -132,11 +132,11 @@ static void Init() {
   debugClearScreen();
   #endif
 
-  int flags=MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
-  int initted=Mix_Init(flags);
-  SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
+  int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
+  int mixinitted = Mix_Init(mixflags);
+  SDL_Init(SDL_INIT_JOYSTICK);
 
-  printf("Return value of Mix_Init(): %d\n", initted);
+  printf("Return value of Mix_Init(): %d\n", mixinitted);
   SDL_Delay(1500);
 
 
@@ -277,7 +277,6 @@ int main()
   #if !defined (NXDK)
   printf("Opened controller: %s on port %d\n", controllername, controllerport);
   printf("Now playing: %s\n", fileToPlay);
-  free((char*)controllername);
   #endif
 
   while (Mix_PlayingMusic() == 1) {   
@@ -288,7 +287,6 @@ int main()
 
     printf("Opened controller: %s on port %d\n", controllername, controllerport);
     printf("Now playing: %s\n", fileToPlay);
-    free((char*)controllername);
     free((int)controllerport);
     #endif
 
