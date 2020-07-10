@@ -14,6 +14,7 @@
 #include <SDL2/SDL_mixer.h>
 #endif
 #include <stdio.h>
+#define NUMFILES 50 // Define file limit to use in the File Browser function GetFiles()
 #include <stdbool.h>
 
 //static Uint8 *audio_position = NULL; 
@@ -153,18 +154,18 @@ typedef struct
   char filePath[150];
 }file;
 
-
-static int FileBrowser() {
+file[] GetFiles(char* driveletter) {
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
-  char* driveLetter = "D:";
 
-  file foundFiles[50];
-  int currentIndex = 0;
+  file foundFiles[NUMFILES] = {NULL};
 
   size_t currentFileDirCount = 0;
 
-  hFind = FindFirstFileA("D:\\*.wav", &findFileData);
+  char* driveWav;
+  sprintf(driveWav, "%s\\.wav", driveLetter);
+
+  hFind = FindFirstFileA(driveWav, &findFileData);
 
   do {
     XVideoWaitForVBlank();
@@ -175,13 +176,38 @@ static int FileBrowser() {
     else {
       printf("File: ");
     }
-    foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
-    strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
-    sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveLetter, foundFiles[currentFileDirCount].fileName);
-    currentFileDirCount++;
+    
+    if (currentFileDirCount < (sizeof(foundFiles) / sizeof(file))) {
+      foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
+      strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
+      sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveLetter, foundFiles[currentFileDirCount].fileName);
+      currentFileDirCount++;
+    }
   } 
   while (FindNextFileA(hFind, &findFileData) != 0);
   FindClose(hFind);
+
+  return foundFiles;
+}
+
+void listFiles(const file files[]) {
+  for (int i = 0; i < (sizeof(files) / sizeof(file))) {
+    if (files[i] != NULL) {
+      printf("%d ", files[i].fileIndex);
+      printf("%s\n", files[i].filePath);
+    }
+    else {
+      return;
+    }
+  }
+}
+
+
+static int FileBrowser() {
+
+  files[50] = GetFiles("D:");
+
+  int currentIndex = 0;
 
   while (true)
   {
@@ -189,19 +215,8 @@ static int FileBrowser() {
     SDL_GameControllerUpdate();
     debugClearScreen();
     
-    for (int i = 0; i < currentFileDirCount; i++)
-    {
-      printf("%d ", foundFiles[i].fileIndex);
-      printf("%s\n",foundFiles[i].fileName);
-    }
+    listFiles(files);
 
-    DWORD error = GetLastError();
-    if (error == ERROR_NO_MORE_FILES) {
-      printf("\nTotal number of files and directories: %d\n", currentFileDirCount);
-    } 
-    else {
-      printf("Error: %x\n", error);
-    }
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
       if (currentIndex != 0) {
         currentIndex--;
@@ -220,9 +235,9 @@ static int FileBrowser() {
     }
     
 
-    printf("\nYour current selected file is: %s (Index number %d)\n", foundFiles[currentIndex].fileName, currentIndex);
+    printf("\nYour current selected file is: %s (Index number %d)\n", files[currentIndex].fileName, currentIndex);
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-      strcpy(fileToPlay, foundFiles[currentIndex].filePath);
+      strcpy(fileToPlay, files[currentIndex].filePath);
       free(foundFiles);
       break;
     }
@@ -230,6 +245,7 @@ static int FileBrowser() {
 
   return 0;
 }
+
 #endif
 
 int main()
