@@ -238,7 +238,7 @@ static int FileBrowser() {
     printf("\nYour current selected file is: %s (Index number %d)\n", files[currentIndex].fileName, currentIndex);
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
       strcpy(fileToPlay, files[currentIndex].filePath);
-      free(foundFiles);
+      free(files);
       break;
     }
   }
