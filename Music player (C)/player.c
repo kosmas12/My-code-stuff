@@ -189,7 +189,7 @@ file[] GetFiles(char* driveletter) {
 }
 
 void listFiles(const file files[]) {
-  for (int i = 0; i < (sizeof(files) / sizeof(file))) {
+  for (int i = 0; i < NUMFILES) {
     if (files[i] != NULL) {
       printf("%d ", files[i].fileIndex);
       printf("%s\n", files[i].filePath);
