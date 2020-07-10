@@ -171,17 +171,15 @@ file[] GetFiles(char* driveletter) {
     XVideoWaitForVBlank();
     debugClearScreen();
     if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-      printf("Directory: ");
+      continue;
     } 
     else {
-      printf("File: ");
-    }
-    
-    if (currentFileDirCount < (sizeof(foundFiles) / sizeof(file))) {
-      foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
-      strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
-      sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveLetter, foundFiles[currentFileDirCount].fileName);
-      currentFileDirCount++;
+      if (currentFileDirCount < NUMFILES) {
+        foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
+        strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
+        sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveletter, foundFiles[currentFileDirCount].fileName);
+        currentFileDirCount++;
+      }
     }
   } 
   while (FindNextFileA(hFind, &findFileData) != 0);
